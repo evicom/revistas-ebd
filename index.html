@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Revistas EBD">
+<meta name="application-name" content="Revistas EBD">
+<meta name="theme-color" content="#1a3a5c">
+<meta name="description" content="Gestão de vendas de revistas da Escola Bíblica Dominical PECC 2026">
+<meta name="msapplication-TileColor" content="#1a3a5c">
+<meta name="msapplication-TileImage" content="icons/icon-144.png">
+<title>Revistas EBD</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-152.png">
+<link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #1a3a5c;
+    --accent: #e8a020;
+    --accent2: #c0392b;
+    --bg: #f4f1eb;
+    --card: #ffffff;
+    --text: #1e1e2e;
+    --muted: #6b7280;
+    --border: #e2d9c8;
+    --success: #16a34a;
+    --warning: #d97706;
+    --danger: #dc2626;
+    --shadow: 0 4px 24px rgba(26,58,92,0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  /* HEADER */
+  header {
+    background: var(--primary);
+    color: #fff;
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 64px;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .logo-icon {
+    width: 40px; height: 40px;
+    background: var(--accent);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .logo-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    line-height: 1.1;
+  }
+  .logo-sub { font-size: 0.7rem; opacity: 0.7; font-family: 'Nunito', sans-serif; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; }
+  nav { display: flex; gap: 4px; }
+  nav button {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.75);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+  nav button:hover, nav button.active {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+  }
+  nav button.active { background: var(--accent); color: #1a1a1a; }
+
+  /* MAIN */
+  main { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+
+  /* SECTION */
+  .section { display: none; animation: fadeIn 0.3s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* PAGE TITLE */
+  .page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--primary);
+    margin-bottom: 6px;
+  }
+  .page-sub { color: var(--muted); font-size: 0.95rem; margin-bottom: 28px; }
+
+  /* CARDS GRID */
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+  .card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+    border: 1.5px solid var(--border);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .card:hover { box-shadow: 0 8px 32px rgba(26,58,92,0.16); transform: translateY(-2px); }
+
+  /* REVISTA CARDS */
+  .revista-card {
+    background: var(--card);
+    border-radius: 16px;
+    border: 1.5px solid var(--border);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .revista-card:hover { box-shadow: 0 8px 32px rgba(26,58,92,0.16); transform: translateY(-2px); }
+  .revista-header {
+    padding: 20px 24px 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .revista-icon {
+    width: 52px; height: 52px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+  }
+  .revista-info h3 { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--primary); }
+  .revista-info .tipo { font-size: 0.78rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+  .revista-preco {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--accent2);
+    padding: 0 24px 8px;
+    font-family: 'Playfair Display', serif;
+  }
+  .revista-preco span { font-size: 0.9rem; color: var(--muted); font-family: 'Nunito', sans-serif; font-weight: 600; }
+  .revista-details { padding: 0 24px 20px; }
+  .revista-details p { font-size: 0.85rem; color: var(--muted); margin-bottom: 4px; }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-right: 4px;
+    margin-top: 6px;
+  }
+  .badge-blue { background: #dbeafe; color: #1d4ed8; }
+  .badge-green { background: #dcfce7; color: #15803d; }
+  .badge-orange { background: #ffedd5; color: #c2410c; }
+  .badge-yellow { background: #fef9c3; color: #a16207; }
+
+  /* TRIMESTRE */
+  .trimestre-banner {
+    background: linear-gradient(135deg, var(--primary) 0%, #2563eb 100%);
+    border-radius: 20px;
+    padding: 32px;
+    color: #fff;
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .trimestre-banner::after {
+    content: '📖';
+    position: absolute; right: 32px; top: 50%; transform: translateY(-50%);
+    font-size: 80px; opacity: 0.12;
+  }
+  .trimestre-banner h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 900; margin-bottom: 6px; }
+  .trimestre-banner p { opacity: 0.8; font-size: 0.95rem; }
+  .trimestre-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-top: 20px; }
+  .sem-item {
+    background: rgba(255,255,255,0.13);
+    border-radius: 12px;
+    padding: 16px 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+  .sem-item .label { font-size: 0.75rem; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .sem-item .value { font-size: 1.1rem; font-weight: 800; }
+
+  /* CLIENTES */
+  .toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px; gap: 12px; flex-wrap: wrap;
+  }
+  .search-box {
+    display: flex; align-items: center; gap: 8px;
+    background: #fff; border: 1.5px solid var(--border);
+    border-radius: 10px; padding: 8px 14px;
+    flex: 1; max-width: 320px;
+  }
+  .search-box input {
+    border: none; outline: none; font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem; width: 100%; background: transparent;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 9px 18px; border-radius: 10px;
+    font-family: 'Nunito', sans-serif; font-size: 0.88rem; font-weight: 700;
+    cursor: pointer; border: none; transition: all 0.2s; letter-spacing: 0.3px;
+    white-space: nowrap;
+  }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover { background: #0f2640; }
+  .btn-accent { background: var(--accent); color: #1a1a1a; }
+  .btn-accent:hover { background: #d4901a; }
+  .btn-success { background: var(--success); color: #fff; }
+  .btn-success:hover { background: #15803d; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-danger:hover { background: #b91c1c; }
+  .btn-ghost { background: transparent; color: var(--primary); border: 1.5px solid var(--border); }
+  .btn-ghost:hover { background: var(--bg); }
+  .btn-whatsapp { background: #25d366; color: #fff; }
+  .btn-whatsapp:hover { background: #1db954; }
+  .btn-sm { padding: 5px 11px; font-size: 0.8rem; border-radius: 7px; }
+
+  /* TABLE */
+  .table-wrap { background: #fff; border-radius: 14px; box-shadow: var(--shadow); border: 1.5px solid var(--border); overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    background: var(--primary); color: #fff;
+    text-align: left; padding: 13px 16px;
+    font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;
+  }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #f8f7f4; }
+  tbody td { padding: 13px 16px; font-size: 0.88rem; }
+
+  /* STATUS BADGES */
+  .status {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px; border-radius: 20px;
+    font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .status-pago { background: #dcfce7; color: #15803d; }
+  .status-pendente { background: #fef9c3; color: #a16207; }
+  .status-parcial { background: #ffedd5; color: #c2410c; }
+  .status-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45); z-index: 1000;
+    align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: #fff; border-radius: 20px;
+    padding: 32px; width: 100%; max-width: 520px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    animation: modalIn 0.25s ease;
+    max-height: 90vh; overflow-y: auto;
+  }
+  @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(12px); } to { opacity: 1; transform: none; } }
+  .modal h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--primary); margin-bottom: 20px; }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 0.82rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 10px 14px;
+    border: 1.5px solid var(--border); border-radius: 10px;
+    font-family: 'Nunito', sans-serif; font-size: 0.9rem;
+    outline: none; transition: border 0.2s; background: var(--bg);
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); background: #fff; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; flex-wrap: wrap; }
+
+  /* PEDIDO ITEMS */
+  .pedido-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px; background: var(--bg); border-radius: 10px;
+    border: 1.5px solid var(--border); margin-bottom: 10px;
+  }
+  .pedido-item-info { flex: 1; }
+  .pedido-item-info strong { font-size: 0.9rem; color: var(--primary); }
+  .pedido-item-info small { display: block; color: var(--muted); font-size: 0.78rem; }
+  .qty-ctrl { display: flex; align-items: center; gap: 8px; }
+  .qty-ctrl button {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--primary); color: #fff;
+    border: none; cursor: pointer; font-size: 1rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .qty-ctrl span { font-weight: 800; font-size: 0.95rem; min-width: 24px; text-align: center; }
+
+  /* RELATÓRIO */
+  .relatorio-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px; }
+  .stat-card {
+    background: #fff; border-radius: 14px; padding: 22px;
+    border: 1.5px solid var(--border); box-shadow: var(--shadow);
+  }
+  .stat-card .stat-label { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin-bottom: 8px; }
+  .stat-card .stat-value { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; color: var(--primary); }
+  .stat-card .stat-value.green { color: var(--success); }
+  .stat-card .stat-value.orange { color: var(--warning); }
+  .relatorio-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+  .relatorio-preview {
+    background: #fff; border-radius: 14px; padding: 24px;
+    border: 1.5px solid var(--border); box-shadow: var(--shadow);
+    font-size: 0.85rem; white-space: pre-wrap; font-family: 'Courier New', monospace;
+    color: var(--text); max-height: 320px; overflow-y: auto; line-height: 1.7;
+  }
+
+  /* EMPTY STATE */
+  .empty { text-align: center; padding: 56px 20px; color: var(--muted); }
+  .empty .icon { font-size: 48px; margin-bottom: 12px; opacity: 0.4; }
+  .empty h4 { font-size: 1.1rem; color: var(--primary); margin-bottom: 6px; }
+
+  /* TOAST */
+  #toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--primary); color: #fff;
+    padding: 12px 20px; border-radius: 12px;
+    font-size: 0.88rem; font-weight: 600;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    z-index: 9999; opacity: 0; transform: translateY(12px);
+    transition: all 0.3s; pointer-events: none;
+  }
+  #toast.show { opacity: 1; transform: none; }
+
+  @media (max-width: 640px) {
+    .header-inner { padding: 0 12px; height: auto; flex-direction: column; align-items: stretch; padding-top: 10px; padding-bottom: 0; gap: 0; }
+    .logo { padding-bottom: 8px; }
+    .logo-text { font-size: 1.1rem; }
+    .logo-sub { display: none; }
+    nav { display: flex; gap: 0; border-top: 1px solid rgba(255,255,255,0.12); overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+    nav::-webkit-scrollbar { display: none; }
+    nav button { flex: 1; min-width: 72px; padding: 10px 6px; font-size: 0.72rem; border-radius: 0; text-align: center; white-space: nowrap; }
+    main { padding: 14px 10px; }
+    .page-title { font-size: 1.4rem; }
+    .cards-grid { grid-template-columns: 1fr; gap: 14px; }
+    .form-row { grid-template-columns: 1fr; }
+    .relatorio-actions { flex-direction: column; }
+    .relatorio-actions .btn { width: 100%; justify-content: center; }
+    .relatorio-stats { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .stat-card { padding: 14px; }
+    .stat-card .stat-value { font-size: 1.4rem; }
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 12px; }
+    table { min-width: 560px; }
+    thead th { padding: 10px 10px; font-size: 0.72rem; }
+    tbody td { padding: 10px 10px; font-size: 0.82rem; }
+    .btn-sm { padding: 6px 9px; font-size: 0.75rem; }
+    .toolbar { flex-direction: column; align-items: stretch; }
+    .search-box { max-width: 100%; }
+    .modal { padding: 20px 16px; border-radius: 16px; }
+    .modal h3 { font-size: 1.15rem; }
+    .pedido-item { flex-wrap: wrap; gap: 8px; }
+    .semestre-banner, .trimestre-banner { padding: 20px 16px; border-radius: 14px; }
+    .semestre-banner h2, .trimestre-banner h2 { font-size: 1.3rem; }
+    .semestre-grid, .trimestre-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .sem-item { padding: 10px 12px; }
+    .sem-item .value { font-size: 0.95rem; }
+    #toast { bottom: 12px; right: 12px; left: 12px; text-align: center; }
+    .relatorio-preview { font-size: 0.75rem; padding: 14px; }
+  }
+
+  @media (max-width: 380px) {
+    nav button { font-size: 0.65rem; padding: 9px 4px; min-width: 60px; }
+    .relatorio-stats { grid-template-columns: 1fr; }
+    .semestre-grid, .trimestre-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">📚</div>
+      <div>
+        <div class="logo-text">Revistas EBD</div>
+        <div class="logo-sub">Escola Bíblica Dominical</div>
+      </div>
+    </div>
+    <nav>
+      <button class="active" onclick="showSection('revistas')">📖 Revistas</button>
+      <button onclick="showSection('clientes')">👥 Clientes</button>
+      <button onclick="showSection('trimestre')">📅 Trimestre</button>
+      <button onclick="showSection('relatorio')">📊 Relatório</button>
+    </nav>
+  </div>
+</header>
+
+<!-- PWA INSTALL BANNER -->
+<div id="install-banner" style="display:none;align-items:center;justify-content:space-between;gap:12px;background:#1a3a5c;color:#fff;padding:10px 24px;font-family:'Nunito',sans-serif;font-size:0.88rem;flex-wrap:wrap;">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span style="font-size:1.3rem">📲</span>
+    <span><strong>Instalar Revistas EBD</strong> — Acesse offline no seu dispositivo!</span>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button onclick="instalarApp()" style="background:#e8a020;color:#1a1a1a;border:none;border-radius:8px;padding:7px 16px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;font-size:0.85rem;">Instalar</button>
+    <button onclick="document.getElementById('install-banner').style.display='none'" style="background:rgba(255,255,255,0.15);color:#fff;border:none;border-radius:8px;padding:7px 12px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:0.85rem;">✕</button>
+  </div>
+</div>
+
+<main>
+  <!-- REVISTAS -->
+  <section id="sec-revistas" class="section active">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:6px">
+      <div class="page-title" style="margin-bottom:0">Catálogo de Revistas</div>
+      <button class="btn btn-accent" onclick="gerarImagemLista()">🖼️ Gerar Imagem da Lista</button>
+    </div>
+    <p class="page-sub">1º ao 4º Trimestre 2026 — PECC</p>
+    <canvas id="canvas-lista" style="display:none"></canvas>
+    <div id="imagem-preview" style="display:none;margin:20px 0;background:#fff;border-radius:16px;padding:20px;box-shadow:var(--shadow);border:1.5px solid var(--border);text-align:center">
+      <p style="font-weight:700;color:var(--primary);margin-bottom:12px;">✅ Imagem gerada com sucesso!</p>
+      <img id="img-gerada" style="max-width:100%;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,0.12)" />
+      <div style="margin-top:14px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <a id="btn-download" class="btn btn-success" download="lista-revistas-ebd-2026.png">⬇️ Baixar Imagem</a>
+        <button class="btn btn-whatsapp" onclick="compartilharWhatsapp()">📱 Enviar WhatsApp</button>
+        <button class="btn btn-ghost" onclick="document.getElementById('imagem-preview').style.display='none'">✕ Fechar</button>
+      </div>
+    </div>
+    <div class="cards-grid" id="revistas-grid"></div>
+  </section>
+
+  <!-- CLIENTES -->
+  <section id="sec-clientes" class="section">
+    <div class="page-title">Clientes</div>
+    <p class="page-sub">Gerencie clientes, pedidos e status de pagamento</p>
+    <div class="toolbar">
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="search-cliente" placeholder="Buscar cliente..." oninput="renderClientes()">
+      </div>
+      <button class="btn btn-primary" onclick="openModalCliente()">+ Novo Cliente</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th>Total Revistas</th>
+            <th>Valor Total</th>
+            <th>Pagamento</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="clientes-tbody"></tbody>
+      </table>
+    </div>
+    <div id="clientes-empty" class="empty" style="display:none">
+      <div class="icon">👥</div>
+      <h4>Nenhum cliente cadastrado</h4>
+      <p>Clique em "Novo Cliente" para começar</p>
+    </div>
+  </section>
+
+  <!-- TRIMESTRE -->
+  <section id="sec-trimestre" class="section">
+    <div class="page-title">Trimestre 2026</div>
+    <p class="page-sub">Informações dos trimestres do ano letivo</p>
+    <div class="trimestre-banner">
+      <h2>📅 1º Trimestre 2026</h2>
+      <p>Janeiro a Março — Ciclo PECC em andamento</p>
+      <div class="trimestre-grid">
+        <div class="sem-item"><div class="label">Período</div><div class="value">Jan – Mar 2026</div></div>
+        <div class="sem-item"><div class="label">Prazo do Pedido</div><div class="value">10 de Jan 2026</div></div>
+        <div class="sem-item"><div class="label">Entrega</div><div class="value">1ª semana Fev</div></div>
+        <div class="sem-item"><div class="label">Série</div><div class="value">PECC 2026</div></div>
+      </div>
+    </div>
+    <div class="trimestre-banner" style="background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);">
+      <h2>📅 2º Trimestre 2026</h2>
+      <p>Abril a Junho — Planejamento em andamento</p>
+      <div class="trimestre-grid">
+        <div class="sem-item"><div class="label">Período</div><div class="value">Abr – Jun 2026</div></div>
+        <div class="sem-item"><div class="label">Prazo do Pedido</div><div class="value">20 de Mar 2026</div></div>
+        <div class="sem-item"><div class="label">Entrega</div><div class="value">1ª semana Abr</div></div>
+        <div class="sem-item"><div class="label">Série</div><div class="value">PECC 2026</div></div>
+      </div>
+    </div>
+    <div class="trimestre-banner" style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);">
+      <h2>📅 3º Trimestre 2026</h2>
+      <p>Julho a Setembro — Planejamento em andamento</p>
+      <div class="trimestre-grid">
+        <div class="sem-item"><div class="label">Período</div><div class="value">Jul – Set 2026</div></div>
+        <div class="sem-item"><div class="label">Prazo do Pedido</div><div class="value">20 de Jun 2026</div></div>
+        <div class="sem-item"><div class="label">Entrega</div><div class="value">1ª semana Jul</div></div>
+        <div class="sem-item"><div class="label">Série</div><div class="value">PECC 2026</div></div>
+      </div>
+    </div>
+    <div class="trimestre-banner" style="background: linear-gradient(135deg, #b45309 0%, #f59e0b 100%);">
+      <h2>📅 4º Trimestre 2026</h2>
+      <p>Outubro a Dezembro — Planejamento em andamento</p>
+      <div class="trimestre-grid">
+        <div class="sem-item"><div class="label">Período</div><div class="value">Out – Dez 2026</div></div>
+        <div class="sem-item"><div class="label">Prazo do Pedido</div><div class="value">20 de Set 2026</div></div>
+        <div class="sem-item"><div class="label">Entrega</div><div class="value">1ª semana Out</div></div>
+        <div class="sem-item"><div class="label">Série</div><div class="value">PECC 2026</div></div>
+      </div>
+    </div>
+
+    <div class="page-title" style="font-size:1.3rem; margin-top: 12px; margin-bottom: 16px;">Tabela de Preços 2026</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Revista</th><th>Tipo</th><th>Série</th><th>Preço Unit.</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>🌸 Jardim de Infância Professor</td><td><span class="badge badge-yellow">Professor</span></td><td>PECC</td><td style="font-weight:800;color:#c0392b">R$ 13,00</td></tr>
+          <tr><td>🌼 Jardim de Infância Aluno</td><td><span class="badge badge-blue">Aluno</span></td><td>PECC</td><td style="font-weight:800;color:#c0392b">R$ 10,00</td></tr>
+          <tr><td>📘 Maternal Aluno</td><td><span class="badge badge-blue">Aluno</span></td><td>PECC</td><td style="font-weight:800;color:#c0392b">R$ 9,00</td></tr>
+          <tr><td>📒 Maternal Professor</td><td><span class="badge badge-yellow">Professor</span></td><td>PECC</td><td style="font-weight:800;color:#c0392b">R$ 13,00</td></tr>
+          <tr><td>📗 Juniores Aluno</td><td><span class="badge badge-blue">Aluno</span></td><td>PECC</td><td style="font-weight:800;color:#c0392b">R$ 9,00</td></tr>
+          <tr><td>📓 Juniores Professor</td><td><span class="badge badge-yellow">Professor</span></td><td>PECC</td><td style="font-weight:800;color:#c0392b">R$ 13,00</td></tr>
+          <tr><td>🔖 Adolescentes</td><td><span class="badge badge-blue">Aluno</span></td><td>PECC</td><td style="font-weight:800;color:#c0392b">R$ 12,00</td></tr>
+          <tr><td>📙 Adultos Aluno</td><td><span class="badge badge-blue">Aluno</span></td><td>PECC</td><td style="font-weight:800;color:#c0392b">R$ 9,00</td></tr>
+          <tr><td>📕 Adultos Mestre</td><td><span class="badge badge-orange">Mestre</span></td><td>PECC</td><td style="font-weight:800;color:#c0392b">R$ 12,00</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- RELATÓRIO -->
+  <section id="sec-relatorio" class="section">
+    <div class="page-title">Relatório Geral</div>
+    <p class="page-sub">Resumo de clientes, pedidos e pagamentos</p>
+    <div class="relatorio-stats" id="relatorio-stats"></div>
+    <div class="relatorio-actions">
+      <button class="btn btn-primary" onclick="gerarRelatorio()">📋 Gerar Relatório</button>
+      <button class="btn btn-whatsapp" onclick="enviarWhatsapp()">📱 Enviar via WhatsApp</button>
+      <button class="btn btn-ghost" onclick="copiarRelatorio()">📋 Copiar Texto</button>
+    </div>
+    <div id="relatorio-preview" class="relatorio-preview">Clique em "Gerar Relatório" para visualizar...</div>
+  </section>
+
+</main>
+
+<!-- MODAL CLIENTE -->
+<div class="modal-overlay" id="modal-cliente">
+  <div class="modal">
+    <h3 id="modal-cliente-title">Novo Cliente</h3>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nome Completo *</label>
+        <input type="text" id="cli-nome" placeholder="Ex: Maria Silva">
+      </div>
+      <div class="form-group">
+        <label>Telefone / WhatsApp</label>
+        <input type="text" id="cli-tel" placeholder="(00) 00000-0000">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Observações</label>
+      <textarea id="cli-obs" rows="2" placeholder="Informações adicionais..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-cliente')">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarCliente()">Salvar Cliente</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PEDIDO -->
+<div class="modal-overlay" id="modal-pedido">
+  <div class="modal">
+    <h3>Pedido — <span id="pedido-cliente-nome"></span></h3>
+    <p style="color:var(--muted);font-size:0.85rem;margin-bottom:18px">Selecione as quantidades de cada revista</p>
+    <div id="pedido-items"></div>
+    <div style="background:var(--bg);border-radius:10px;padding:14px;margin-top:10px;display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-weight:700;color:var(--muted);">TOTAL DO PEDIDO</span>
+      <span id="pedido-total" style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;color:var(--accent2)">R$ 0,00</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-pedido')">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarPedido()">Confirmar Pedido</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PAGAMENTO -->
+<div class="modal-overlay" id="modal-pagamento">
+  <div class="modal">
+    <h3>Status de Pagamento</h3>
+    <p style="color:var(--muted);font-size:0.85rem;margin-bottom:18px">Cliente: <strong id="pag-cliente-nome"></strong></p>
+    <div class="form-group">
+      <label>Status do Pagamento</label>
+      <select id="pag-status">
+        <option value="pendente">⏳ Pendente</option>
+        <option value="parcial">⚠️ Parcialmente Pago</option>
+        <option value="pago">✅ Pago</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Valor Pago (R$)</label>
+      <input type="number" id="pag-valor" placeholder="0,00" step="0.01" min="0">
+    </div>
+    <div class="form-group">
+      <label>Observação de Pagamento</label>
+      <input type="text" id="pag-obs" placeholder="Ex: Pagou metade, entregou em dinheiro...">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-pagamento')">Cancelar</button>
+      <button class="btn btn-success" onclick="salvarPagamento()">Salvar Pagamento</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ========== DATA ==========
+const REVISTAS = [
+  { id: 'jardim-professor',   nome: 'Jardim de Infância Professor', tipo: 'Professor', serie: 'PECC', preco: 13.00, icon: '🌸', cor: '#fce7f3', desc: 'Material completo para o professor do Jardim de Infância. Planos de aula ilustrados, atividades lúdicas, músicas e dinâmicas para ensinar a Palavra às crianças pequenas.' },
+  { id: 'jardim-aluno',       nome: 'Jardim de Infância Aluno',     tipo: 'Aluno',     serie: 'PECC', preco: 10.00, icon: '🌼', cor: '#fef3c7', desc: 'Revista colorida e animada para crianças do Jardim de Infância. Atividades de colorir, recortar e colar com lições bíblicas adaptadas para a faixa etária.' },
+  { id: 'maternal-aluno',     nome: 'Maternal Aluno',               tipo: 'Aluno',     serie: 'PECC', preco:  9.00, icon: '📘', cor: '#dbeafe', desc: 'Revista para alunos da faixa maternal. Conteúdo visual e lúdico adaptado para crianças pequenas. Linguagem simples, ilustrações coloridas e atividades interativas.' },
+  { id: 'maternal-professor', nome: 'Maternal Professor',           tipo: 'Professor', serie: 'PECC', preco: 13.00, icon: '📒', cor: '#e0e7ff', desc: 'Material completo para o professor da turma maternal. Inclui planos de aula, sugestões de atividades, dicas pedagógicas e textos de apoio para cada lição.' },
+  { id: 'juniores-aluno',     nome: 'Juniores Aluno',               tipo: 'Aluno',     serie: 'PECC', preco:  9.00, icon: '📗', cor: '#dcfce7', desc: 'Revista para alunos juniores com lições dinâmicas, aplicações práticas da Palavra e desafios semanais para fixação do conteúdo.' },
+  { id: 'juniores-professor', nome: 'Juniores Professor',           tipo: 'Professor', serie: 'PECC', preco: 13.00, icon: '📓', cor: '#d1fae5', desc: 'Guia completo para o professor de juniores. Roteiros de aula detalhados, dinâmicas em grupo, sugestões de memorização e textos de aprofundamento.' },
+  { id: 'adolescentes',       nome: 'Adolescentes',                 tipo: 'Aluno',     serie: 'PECC', preco: 12.00, icon: '🔖', cor: '#ede9fe', desc: 'Revista para adolescentes com linguagem jovem e atual. Temas relevantes para a faixa etária, aplicações do evangelho para o dia a dia e desafios de crescimento espiritual.' },
+  { id: 'adultos-aluno',      nome: 'Adultos Aluno',                tipo: 'Aluno',     serie: 'PECC', preco:  9.00, icon: '📙', cor: '#ffedd5', desc: 'Revista para adultos em formação. Estudos aprofundados com aplicações práticas para o cotidiano cristão e reflexões semanais.' },
+  { id: 'adultos-mestre',     nome: 'Adultos Mestre',               tipo: 'Mestre',    serie: 'PECC', preco: 12.00, icon: '📕', cor: '#fef9c3', desc: 'Revista para mestres e professores de adultos. Material completo com comentários bíblicos, metodologia de ensino e orientações pedagógicas para conduzir as aulas com excelência.' },
+];
+
+let clientes = JSON.parse(localStorage.getItem('ebd-clientes') || '[]');
+let editandoClienteId = null;
+let pedidoClienteId = null;
+let pagamentoClienteId = null;
+let pedidoQtds = {};
+
+function save() { localStorage.setItem('ebd-clientes', JSON.stringify(clientes)); }
+
+// ========== NAV ==========
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if (id === 'relatorio') atualizarStats();
+}
+
+// ========== REVISTAS GRID ==========
+function renderRevistas() {
+  const g = document.getElementById('revistas-grid');
+  g.innerHTML = REVISTAS.map(r => `
+    <div class="revista-card">
+      <div class="revista-header">
+        <div class="revista-icon" style="background:${r.cor}">${r.icon}</div>
+        <div class="revista-info">
+          <div class="tipo">${r.serie} · ${r.tipo}</div>
+          <h3>${r.nome}</h3>
+        </div>
+      </div>
+      <div class="revista-preco">R$ ${r.preco.toFixed(2).replace('.',',')} <span>/ unidade</span></div>
+      <div class="revista-details">
+        <p>${r.desc}</p>
+        <span class="badge badge-blue">${r.serie}</span>
+        <span class="badge ${r.tipo === 'Mestre' ? 'badge-orange' : r.tipo === 'Professor' ? 'badge-yellow' : 'badge-green'}">${r.tipo}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ========== CLIENTES ==========
+function renderClientes() {
+  const q = document.getElementById('search-cliente').value.toLowerCase();
+  const list = clientes.filter(c => c.nome.toLowerCase().includes(q) || (c.tel||'').includes(q));
+  const tbody = document.getElementById('clientes-tbody');
+  const empty = document.getElementById('clientes-empty');
+  const isMobile = window.innerWidth <= 640;
+
+  if (list.length === 0) {
+    tbody.innerHTML = ''; empty.style.display = '';
+  } else {
+    empty.style.display = 'none';
+    if (isMobile) {
+      // Card layout for mobile — injected outside the table
+      document.querySelector('.table-wrap').style.display = 'none';
+      let mobileList = document.getElementById('clientes-mobile');
+      if (!mobileList) {
+        mobileList = document.createElement('div');
+        mobileList.id = 'clientes-mobile';
+        document.querySelector('.table-wrap').insertAdjacentElement('afterend', mobileList);
+      }
+      mobileList.style.display = 'block';
+      mobileList.innerHTML = list.map(c => {
+        const total = calcTotal(c);
+        const valPago = c.valorPago || 0;
+        const st = c.statusPagamento || 'pendente';
+        const stHtml = {
+          pago: '<span class="status status-pago"><span class="status-dot"></span>Pago</span>',
+          pendente: '<span class="status status-pendente"><span class="status-dot"></span>Pendente</span>',
+          parcial: '<span class="status status-parcial"><span class="status-dot"></span>Parcial</span>',
+        }[st];
+        const qtd = calcQtdTotal(c);
+        return `<div style="background:#fff;border-radius:14px;border:1.5px solid var(--border);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+            <div>
+              <strong style="font-size:1rem;color:var(--primary)">${c.nome}</strong>
+              ${c.tel ? `<div style="font-size:0.8rem;color:var(--muted);margin-top:2px">📞 ${c.tel}</div>` : ''}
+              ${c.obs ? `<div style="font-size:0.78rem;color:var(--muted)">${c.obs}</div>` : ''}
+            </div>
+            ${stHtml}
+          </div>
+          <div style="display:flex;gap:16px;margin-bottom:12px;font-size:0.85rem">
+            <div><span style="color:var(--muted);font-size:0.75rem">REVISTAS</span><br><strong>${qtd}</strong></div>
+            <div><span style="color:var(--muted);font-size:0.75rem">TOTAL</span><br><strong style="color:var(--accent2)">R$ ${total.toFixed(2).replace('.',',')}</strong></div>
+            ${valPago > 0 ? `<div><span style="color:var(--muted);font-size:0.75rem">PAGO</span><br><strong style="color:var(--success)">R$ ${valPago.toFixed(2).replace('.',',')}</strong></div>` : ''}
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="btn btn-accent btn-sm" onclick="openModalPedido('${c.id}')">🛒 Pedido</button>
+            <button class="btn btn-success btn-sm" onclick="openModalPagamento('${c.id}')">💰 Pagar</button>
+            <button class="btn btn-ghost btn-sm" onclick="openModalCliente('${c.id}')">✏️ Editar</button>
+            <button class="btn btn-danger btn-sm" onclick="excluirCliente('${c.id}')">🗑️</button>
+          </div>
+        </div>`;
+      }).join('');
+    } else {
+      document.querySelector('.table-wrap').style.display = '';
+      const mobileList = document.getElementById('clientes-mobile');
+      if (mobileList) mobileList.style.display = 'none';
+      tbody.innerHTML = list.map(c => {
+        const total = calcTotal(c);
+        const valPago = c.valorPago || 0;
+        const st = c.statusPagamento || 'pendente';
+        const stHtml = {
+          pago: '<span class="status status-pago"><span class="status-dot"></span>Pago</span>',
+          pendente: '<span class="status status-pendente"><span class="status-dot"></span>Pendente</span>',
+          parcial: '<span class="status status-parcial"><span class="status-dot"></span>Parcial</span>',
+        }[st];
+        const qtd = calcQtdTotal(c);
+        return `<tr>
+          <td><strong>${c.nome}</strong>${c.obs ? '<br><small style="color:var(--muted)">' + c.obs + '</small>' : ''}</td>
+          <td>${c.tel || '—'}</td>
+          <td style="font-weight:700">${qtd} revista(s)</td>
+          <td style="font-weight:800;color:var(--accent2)">R$ ${total.toFixed(2).replace('.',',')}</td>
+          <td>${stHtml}${valPago > 0 ? '<br><small style="color:var(--muted)">Pago: R$ ' + valPago.toFixed(2).replace('.',',') + '</small>' : ''}</td>
+          <td>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <button class="btn btn-accent btn-sm" onclick="openModalPedido('${c.id}')">🛒 Pedido</button>
+              <button class="btn btn-success btn-sm" onclick="openModalPagamento('${c.id}')">💰 Pagar</button>
+              <button class="btn btn-ghost btn-sm" onclick="openModalCliente('${c.id}')">✏️</button>
+              <button class="btn btn-danger btn-sm" onclick="excluirCliente('${c.id}')">🗑️</button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+  }
+}
+
+function calcTotal(c) {
+  if (!c.pedido) return 0;
+  return REVISTAS.reduce((sum, r) => sum + (c.pedido[r.id] || 0) * r.preco, 0);
+}
+function calcQtdTotal(c) {
+  if (!c.pedido) return 0;
+  return REVISTAS.reduce((sum, r) => sum + (c.pedido[r.id] || 0), 0);
+}
+
+// ========== MODAL CLIENTE ==========
+function openModalCliente(id) {
+  editandoClienteId = id || null;
+  const c = id ? clientes.find(x => x.id === id) : null;
+  document.getElementById('modal-cliente-title').textContent = c ? 'Editar Cliente' : 'Novo Cliente';
+  document.getElementById('cli-nome').value = c ? c.nome : '';
+  document.getElementById('cli-tel').value = c ? (c.tel || '') : '';
+  document.getElementById('cli-obs').value = c ? (c.obs || '') : '';
+  document.getElementById('modal-cliente').classList.add('open');
+}
+
+function salvarCliente() {
+  const nome = document.getElementById('cli-nome').value.trim();
+  if (!nome) { showToast('⚠️ Informe o nome do cliente'); return; }
+  if (editandoClienteId) {
+    const c = clientes.find(x => x.id === editandoClienteId);
+    c.nome = nome; c.tel = document.getElementById('cli-tel').value.trim(); c.obs = document.getElementById('cli-obs').value.trim();
+  } else {
+    clientes.push({ id: Date.now().toString(), nome, tel: document.getElementById('cli-tel').value.trim(), obs: document.getElementById('cli-obs').value.trim(), pedido: {}, statusPagamento: 'pendente', valorPago: 0 });
+  }
+  save(); renderClientes(); closeModal('modal-cliente');
+  showToast(editandoClienteId ? '✅ Cliente atualizado!' : '✅ Cliente cadastrado!');
+}
+
+function excluirCliente(id) {
+  if (!confirm('Excluir este cliente?')) return;
+  clientes = clientes.filter(c => c.id !== id);
+  save(); renderClientes(); showToast('🗑️ Cliente removido');
+}
+
+// ========== MODAL PEDIDO ==========
+function openModalPedido(id) {
+  pedidoClienteId = id;
+  const c = clientes.find(x => x.id === id);
+  document.getElementById('pedido-cliente-nome').textContent = c.nome;
+  pedidoQtds = { ...(c.pedido || {}) };
+  renderPedidoItems();
+  document.getElementById('modal-pedido').classList.add('open');
+}
+
+function renderPedidoItems() {
+  document.getElementById('pedido-items').innerHTML = REVISTAS.map(r => `
+    <div class="pedido-item">
+      <div class="pedido-item-info">
+        <strong>${r.icon} ${r.nome}</strong>
+        <small>${r.serie} · ${r.tipo} · R$ ${r.preco.toFixed(2).replace('.',',')} cada</small>
+      </div>
+      <div class="qty-ctrl">
+        <button onclick="changeQty('${r.id}', -1)">−</button>
+        <span id="qty-${r.id}">${pedidoQtds[r.id] || 0}</span>
+        <button onclick="changeQty('${r.id}', 1)">+</button>
+      </div>
+    </div>
+  `).join('');
+  updatePedidoTotal();
+}
+
+function changeQty(rid, delta) {
+  pedidoQtds[rid] = Math.max(0, (pedidoQtds[rid] || 0) + delta);
+  document.getElementById('qty-' + rid).textContent = pedidoQtds[rid];
+  updatePedidoTotal();
+}
+
+function updatePedidoTotal() {
+  const total = REVISTAS.reduce((s, r) => s + (pedidoQtds[r.id] || 0) * r.preco, 0);
+  document.getElementById('pedido-total').textContent = 'R$ ' + total.toFixed(2).replace('.',',');
+}
+
+function salvarPedido() {
+  const c = clientes.find(x => x.id === pedidoClienteId);
+  c.pedido = { ...pedidoQtds };
+  save(); renderClientes(); closeModal('modal-pedido');
+  showToast('✅ Pedido salvo com sucesso!');
+}
+
+// ========== MODAL PAGAMENTO ==========
+function openModalPagamento(id) {
+  pagamentoClienteId = id;
+  const c = clientes.find(x => x.id === id);
+  document.getElementById('pag-cliente-nome').textContent = c.nome;
+  document.getElementById('pag-status').value = c.statusPagamento || 'pendente';
+  document.getElementById('pag-valor').value = c.valorPago || '';
+  document.getElementById('pag-obs').value = c.obsPagamento || '';
+  document.getElementById('modal-pagamento').classList.add('open');
+}
+
+function salvarPagamento() {
+  const c = clientes.find(x => x.id === pagamentoClienteId);
+  const valorPago = parseFloat(document.getElementById('pag-valor').value) || 0;
+  const totalPedido = calcTotal(c);
+  let status = document.getElementById('pag-status').value;
+  // Auto-atualiza status conforme valor pago
+  if (valorPago >= totalPedido && totalPedido > 0) {
+    status = 'pago';
+  } else if (valorPago > 0 && valorPago < totalPedido) {
+    status = 'parcial';
+  } else if (valorPago === 0) {
+    status = 'pendente';
+  }
+  c.statusPagamento = status;
+  c.valorPago = valorPago;
+  c.obsPagamento = document.getElementById('pag-obs').value.trim();
+  save(); renderClientes(); closeModal('modal-pagamento');
+  const msg = status === 'pago' ? '✅ Pagamento concluído! Status: PAGO' : '💰 Pagamento atualizado!';
+  showToast(msg);
+}
+
+// ========== RELATÓRIO ==========
+function atualizarStats() {
+  const totalClientes = clientes.length;
+  const totalRevistas = clientes.reduce((s, c) => s + calcQtdTotal(c), 0);
+  const totalValor = clientes.reduce((s, c) => s + calcTotal(c), 0);
+  const totalArrecadado = clientes.reduce((s, c) => s + (c.valorPago || 0), 0);
+  const pagos = clientes.filter(c => c.statusPagamento === 'pago').length;
+  document.getElementById('relatorio-stats').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Clientes</div><div class="stat-value">${totalClientes}</div></div>
+    <div class="stat-card"><div class="stat-label">Revistas Pedidas</div><div class="stat-value">${totalRevistas}</div></div>
+    <div class="stat-card"><div class="stat-label">Valor Total</div><div class="stat-value" style="font-size:1.4rem">R$ ${totalValor.toFixed(2).replace('.',',')}</div></div>
+    <div class="stat-card"><div class="stat-label">Arrecadado</div><div class="stat-value green" style="font-size:1.4rem">R$ ${totalArrecadado.toFixed(2).replace('.',',')}</div></div>
+    <div class="stat-card"><div class="stat-label">Pagos</div><div class="stat-value green">${pagos}</div></div>
+    <div class="stat-card"><div class="stat-label">Pendentes</div><div class="stat-value orange">${totalClientes - pagos}</div></div>
+  `;
+}
+
+let relatorioTexto = '';
+
+function gerarRelatorio() {
+  atualizarStats();
+  const data = new Date().toLocaleDateString('pt-BR');
+  const totalClientes = clientes.length;
+  const totalRevistas = clientes.reduce((s, c) => s + calcQtdTotal(c), 0);
+  const totalValor = clientes.reduce((s, c) => s + calcTotal(c), 0);
+  const totalArrecadado = clientes.reduce((s, c) => s + (c.valorPago || 0), 0);
+
+  let linhas = [];
+  linhas.push('╔══════════════════════════════════════╗');
+  linhas.push('║        REVISTAS EBD — 2026           ║');
+  linhas.push('║    Escola Bíblica Dominical (PECC)   ║');
+  linhas.push('╚══════════════════════════════════════╝');
+  linhas.push(`📅 Gerado em: ${data}`);
+  linhas.push('');
+  linhas.push('📊 RESUMO GERAL');
+  linhas.push(`👥 Total de clientes: ${totalClientes}`);
+  linhas.push(`📚 Total de revistas: ${totalRevistas}`);
+  linhas.push(`💵 Valor total pedidos: R$ ${totalValor.toFixed(2).replace('.',',')}`);
+  linhas.push(`✅ Total arrecadado: R$ ${totalArrecadado.toFixed(2).replace('.',',')}`);
+  linhas.push(`⏳ A receber: R$ ${(totalValor - totalArrecadado).toFixed(2).replace('.',',')}`);
+  linhas.push('');
+  linhas.push('─────────────────────────────────────');
+  linhas.push('📋 PEDIDOS POR TIPO DE REVISTA');
+  REVISTAS.forEach(r => {
+    const qtd = clientes.reduce((s, c) => s + (c.pedido?.[r.id] || 0), 0);
+    if (qtd > 0) linhas.push(`  ${r.icon} ${r.nome}: ${qtd} un. × R$ ${r.preco.toFixed(2).replace('.',',')} = R$ ${(qtd * r.preco).toFixed(2).replace('.',',')}`);
+  });
+  linhas.push('');
+  linhas.push('─────────────────────────────────────');
+  linhas.push('👤 DETALHES POR CLIENTE');
+  clientes.forEach(c => {
+    const total = calcTotal(c);
+    const qtd = calcQtdTotal(c);
+    if (qtd === 0) return;
+    const stEmoji = { pago: '✅', pendente: '⏳', parcial: '⚠️' }[c.statusPagamento || 'pendente'];
+    linhas.push('');
+    linhas.push(`${stEmoji} ${c.nome}${c.tel ? ' · ' + c.tel : ''}`);
+    REVISTAS.forEach(r => {
+      const q = c.pedido?.[r.id] || 0;
+      if (q > 0) linhas.push(`   └ ${r.nome}: ${q} un.`);
+    });
+    linhas.push(`   💰 Total: R$ ${total.toFixed(2).replace('.',',')} | Pago: R$ ${(c.valorPago||0).toFixed(2).replace('.',',')}`);
+    if (c.obsPagamento) linhas.push(`   📝 Obs: ${c.obsPagamento}`);
+  });
+  linhas.push('');
+  linhas.push('─────────────────────────────────────');
+  linhas.push('💰 VALOR ARRECADADO POR TIPO DE REVISTA');
+  let totalArrecadadoRevistas = 0;
+  REVISTAS.forEach(r => {
+    // Proporcional: distribui o valor pago de cada cliente entre as revistas pelo peso
+    let arrecadadoRevista = 0;
+    clientes.forEach(c => {
+      const qtdR = c.pedido?.[r.id] || 0;
+      if (qtdR === 0) return;
+      const totalCliente = calcTotal(c);
+      const valorPagoCliente = c.valorPago || 0;
+      if (totalCliente === 0) return;
+      const proporcao = (qtdR * r.preco) / totalCliente;
+      arrecadadoRevista += valorPagoCliente * proporcao;
+    });
+    const qtd = clientes.reduce((s, c) => s + (c.pedido?.[r.id] || 0), 0);
+    if (qtd > 0) {
+      totalArrecadadoRevistas += arrecadadoRevista;
+      linhas.push(`  ${r.icon} ${r.nome}: ${qtd} un. → R$ ${arrecadadoRevista.toFixed(2).replace('.',',')} arrecadado`);
+    }
+  });
+  linhas.push('');
+  linhas.push(`💵 TOTAL GERAL ARRECADADO: R$ ${totalArrecadado.toFixed(2).replace('.',',')}`);
+  linhas.push(`📦 TOTAL PEDIDOS: R$ ${totalValor.toFixed(2).replace('.',',')}`);
+  linhas.push(`⏳ AINDA A RECEBER: R$ ${(totalValor - totalArrecadado).toFixed(2).replace('.',',')}`);
+  linhas.push('');
+  linhas.push('─────────────────────────────────────');
+  linhas.push(`💚 Enviado via Revistas EBD App`);
+
+  relatorioTexto = linhas.join('\n');
+  document.getElementById('relatorio-preview').textContent = relatorioTexto;
+  showToast('📋 Relatório gerado!');
+}
+
+function copiarRelatorio() {
+  if (!relatorioTexto) { gerarRelatorio(); }
+  navigator.clipboard.writeText(relatorioTexto).then(() => showToast('📋 Copiado para a área de transferência!'));
+}
+
+function enviarWhatsapp() {
+  if (!relatorioTexto) gerarRelatorio();
+  const url = 'https://wa.me/?text=' + encodeURIComponent(relatorioTexto);
+  window.open(url, '_blank');
+}
+
+// ========== UTILS ==========
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); }));
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ========== GERAR IMAGEM DA LISTA ==========
+function gerarImagemLista() {
+  const canvas = document.getElementById('canvas-lista');
+  const rowH = 54;
+  const headerH = 120;
+  const footerH = 56;
+  const padding = 32;
+  const width = 720;
+  const height = headerH + 38 + REVISTAS.length * rowH + footerH + padding;
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+
+  // Background
+  ctx.fillStyle = '#f4f1eb';
+  ctx.fillRect(0, 0, width, height);
+
+  // Header gradient
+  const grad = ctx.createLinearGradient(0, 0, width, 0);
+  grad.addColorStop(0, '#1a3a5c');
+  grad.addColorStop(1, '#2563eb');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, width, headerH);
+
+  // Header icon area
+  ctx.fillStyle = '#e8a020';
+  roundRect(ctx, padding, 22, 52, 52, 12);
+  ctx.fill();
+  ctx.font = '28px serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('📚', padding + 26, 56);
+
+  // Header text
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 24px Georgia, serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('Revistas EBD 2026', padding + 64, 46);
+  ctx.font = '600 13px Arial, sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.75)';
+  ctx.fillText('Escola Bíblica Dominical — PECC', padding + 64, 66);
+  ctx.font = '500 11.5px Arial, sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.55)';
+  ctx.fillText('Lista de Preços • 1º ao 4º Trimestre 2026', padding + 64, 84);
+
+  // Date top-right
+  ctx.textAlign = 'right';
+  ctx.font = '500 11px Arial, sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  ctx.fillText(new Date().toLocaleDateString('pt-BR'), width - padding, 84);
+
+  // Table header row
+  const tableTop = headerH + 10;
+  ctx.fillStyle = '#1a3a5c';
+  ctx.fillRect(padding, tableTop, width - padding * 2, 38);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 11px Arial, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('REVISTA', padding + 52, tableTop + 24);
+  ctx.textAlign = 'center';
+  ctx.fillText('TIPO', width - 190, tableTop + 24);
+  ctx.textAlign = 'right';
+  ctx.fillText('PREÇO', width - padding - 10, tableTop + 24);
+
+  // Rows
+  REVISTAS.forEach((r, i) => {
+    const y = tableTop + 38 + i * rowH;
+    ctx.fillStyle = i % 2 === 0 ? '#ffffff' : '#f8f6f0';
+    ctx.fillRect(padding, y, width - padding * 2, rowH);
+
+    // Color stripe
+    ctx.fillStyle = r.cor;
+    ctx.fillRect(padding, y, 5, rowH);
+
+    // Icon circle
+    ctx.fillStyle = r.cor;
+    ctx.beginPath();
+    ctx.arc(padding + 26, y + rowH / 2, 19, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = '19px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(r.icon, padding + 26, y + rowH / 2 + 7);
+
+    // Name
+    ctx.fillStyle = '#1a3a5c';
+    ctx.font = 'bold 13px Arial, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(r.nome, padding + 52, y + rowH / 2 - 4);
+    ctx.fillStyle = '#6b7280';
+    ctx.font = '11px Arial, sans-serif';
+    ctx.fillText('Série ' + r.serie, padding + 52, y + rowH / 2 + 12);
+
+    // Tipo badge
+    const tipoColor = r.tipo === 'Mestre' ? '#c2410c' : r.tipo === 'Professor' ? '#a16207' : '#1d4ed8';
+    const tipoBg   = r.tipo === 'Mestre' ? '#ffedd5' : r.tipo === 'Professor' ? '#fef9c3' : '#dbeafe';
+    ctx.fillStyle = tipoBg;
+    roundRect(ctx, width - 228, y + rowH / 2 - 12, 76, 22, 11);
+    ctx.fill();
+    ctx.fillStyle = tipoColor;
+    ctx.font = 'bold 9.5px Arial, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(r.tipo.toUpperCase(), width - 190, y + rowH / 2 + 4);
+
+    // Price
+    ctx.fillStyle = '#c0392b';
+    ctx.font = 'bold 15px Georgia, serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('R$ ' + r.preco.toFixed(2).replace('.', ','), width - padding - 10, y + rowH / 2 + 5);
+
+    // Row border
+    ctx.strokeStyle = '#e2d9c8';
+    ctx.lineWidth = 0.5;
+    ctx.beginPath();
+    ctx.moveTo(padding, y + rowH);
+    ctx.lineTo(width - padding, y + rowH);
+    ctx.stroke();
+  });
+
+  // Footer
+  const footerY = tableTop + 38 + REVISTAS.length * rowH;
+  ctx.fillStyle = '#f0ede6';
+  ctx.fillRect(padding, footerY, width - padding * 2, 44);
+  ctx.fillStyle = '#1a3a5c';
+  ctx.font = 'bold 11px Arial, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('📍 Pedidos e informações: fale com o responsável da EBD', padding + 12, footerY + 27);
+
+  // Outer border
+  ctx.strokeStyle = '#e2d9c8';
+  ctx.lineWidth = 1.5;
+  roundRect(ctx, padding, tableTop, width - padding * 2, 38 + REVISTAS.length * rowH + 44, 0);
+  ctx.stroke();
+
+  // Show preview
+  const dataUrl = canvas.toDataURL('image/png');
+  document.getElementById('img-gerada').src = dataUrl;
+  document.getElementById('btn-download').href = dataUrl;
+  const preview = document.getElementById('imagem-preview');
+  preview.style.display = 'block';
+  preview.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  showToast('🖼️ Imagem gerada com sucesso!');
+}
+
+function compartilharWhatsapp() {
+  showToast('📱 Baixe a imagem e envie pelo WhatsApp!');
+  document.getElementById('btn-download').click();
+  setTimeout(() => {
+    window.open('https://wa.me/', '_blank');
+  }, 800);
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+// ========== PWA SERVICE WORKER ==========
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('SW registrado:', reg.scope))
+      .catch(err => console.log('SW erro:', err));
+  });
+}
+
+// PWA Install Banner
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('install-banner').style.display = 'flex';
+});
+window.addEventListener('appinstalled', () => {
+  document.getElementById('install-banner').style.display = 'none';
+  showToast('✅ App instalado com sucesso!');
+});
+function instalarApp() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(choice => {
+    if (choice.outcome === 'accepted') showToast('✅ Instalando o app...');
+    deferredPrompt = null;
+    document.getElementById('install-banner').style.display = 'none';
+  });
+}
+
+// ========== INIT ==========
+renderRevistas();
+renderClientes();
+window.addEventListener('resize', renderClientes);
+</script>
+</body>
+</html>
