@@ -652,47 +652,64 @@
     t._timer = setTimeout(()=>t.classList.remove('show'), 2600);
   }
 
-  // ---------- BANCO DE DADOS (JSONBin.io) ----------
-  // Todos os dados do app (clientes, pedidos, valores) ficam guardados
-  // num único "bin" no JSONBin.io, assim o app funciona como um banco
-  // de dados de verdade, acessível de qualquer aparelho/navegador.
-  const JSONBIN_BIN_ID = '6a6ccaeaf5f4af5e29daa709';
-  const JSONBIN_ACCESS_KEY = '$2a$10$uaeaNeQqHtxr2/.BRfLDr.l1RGTl0pLPSOh5FtUmLxKMC93h9OHbO';
-  const JSONBIN_BASE_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
+// ---------- BANCO DE DADOS (JSONBin.io) ----------
+// Todos os dados do app (clientes, pedidos, valores) ficam guardados
+// num único "bin" no JSONBin.io, assim o app funciona como um banco
+// de dados de verdade, acessível de qualquer aparelho/navegador.
 
-  async function jsonbinLoad(){
+const JSONBIN_BIN_ID = '6a85b1bff5f4af5e2928ba89';
+const JSONBIN_KEY = '$2a$10$69I.WVd28qtbrr8JyLiIXOBsdBg4qwbDinwcf1f592s6KIdaZh8rO';
+
+// Detecta automaticamente se é Master Key (começa com $2a$) ou Access Key
+const isMasterKey = JSONBIN_KEY.startsWith('$2a$');
+const AUTH_HEADER = isMasterKey ? 'X-Master-Key' : 'X-Access-Key';
+
+const JSONBIN_BASE_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
+
+async function jsonbinLoad() {
+  try {
     const res = await fetch(`${JSONBIN_BASE_URL}/latest`, {
       method: 'GET',
-      headers: { 'X-Access-Key': JSONBIN_ACCESS_KEY }
+      headers: { [AUTH_HEADER]: JSONBIN_KEY }
     });
-    if(!res.ok) throw new Error('Falha ao ler o banco de dados (JSONBin).');
+    if (!res.ok) throw new Error(`Erro HTTP: ${res.status}`);
     const data = await res.json();
     return data.record || {};
+  } catch (error) {
+    console.error("Erro ao carregar do JSONBin:", error);
+    throw new Error('Falha ao ler o banco de dados (JSONBin).');
   }
+}
 
-  async function jsonbinSave(record){
+async function jsonbinSave(record) {
+  try {
     const res = await fetch(JSONBIN_BASE_URL, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'X-Access-Key': JSONBIN_ACCESS_KEY,
+        [AUTH_HEADER]: JSONBIN_KEY,
         'X-Bin-Versioning': 'false'
       },
       body: JSON.stringify(record)
     });
-    if(!res.ok) throw new Error('Falha ao salvar no banco de dados (JSONBin).');
+    if (!res.ok) throw new Error(`Erro HTTP: ${res.status}`);
     return res.json();
+    } catch (error) {
+    console.error("Erro ao salvar no JSONBin:", error);
+    throw new Error('Falha ao salvar no banco de dados (JSONBin).');
   }
+}
 
-  // Salva o estado inteiro (clientes + pedidos + valores) de uma vez —
-  // o JSONBin substitui o conteúdo do bin a cada gravação.
-  async function saveAll(){
-    try{
-      await jsonbinSave({ clientes, pedidos, valores });
-    }catch(e){
-      toast('Erro ao salvar no banco de dados. Verifique sua conexão.');
-    }
+// Salva o estado inteiro (clientes + pedidos + valores) de uma vez —
+// o JSONBin substitui o conteúdo do bin a cada gravação.
+async function saveAll() {
+  try {
+    await jsonbinSave({ clientes, pedidos, valores });
+  } catch (e) {
+    toast('⚠️ Erro ao salvar na nuvem. Verifique sua conexão.');
   }
+}
+// ---------- FIM DO BANCO DE DADOS ----------
 
   // ---------- STORAGE ----------
   async function loadAll(){
