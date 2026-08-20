@@ -1,3 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EBD - Controle de Pedidos e Cobrança</title>
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --card-border: #30363d;
+      --accent: #2f81f7;
+      --accent-hover: #58a6ff;
+      --text: #f0f6fc;
+      --muted: #8b949e;
+      --success: #238636;
+      --danger: #da3633;
+      --warning: #d29922;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); padding: 20px; line-height: 1.5; }
+    header { text-align: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--card-border); }
+    header h1 { font-size: 1.8rem; font-weight: 800; color: var(--accent-hover); }
+    
+    #cloudStatus {
+      text-align: center;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      background-color: var(--card);
+      border: 1px solid var(--card-border);
+    }
+    .status-loading { color: var(--warning); }
+    .status-success { color: #3fb950; border-color: #238636 !important; }
+    .status-error { color: #f85149; border-color: #da3633 !important; }
+
+    nav { display: flex; gap: 10px; justify-content: center; margin-bottom: 24px; flex-wrap: wrap; }
+    nav button { background: var(--card); border: 1px solid var(--card-border); color: var(--text); padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+    nav button.active, nav button:hover { background: var(--accent); border-color: var(--accent); }
+
+    section { display: none; background: var(--card); border: 1px solid var(--card-border); border-radius: 12px; padding: 20px; margin-bottom: 20px; }
+    section.active { display: block; }
+    section h2 { margin-bottom: 8px; font-size: 1.3rem; }
+    section p.desc { color: var(--muted); font-size: 0.9rem; margin-bottom: 16px; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 16px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 0.85rem; font-weight: 600; color: var(--muted); }
+    input, select { background: var(--bg); border: 1px solid var(--card-border); color: var(--text); padding: 10px; border-radius: 6px; outline: none; font-family: inherit; }
+    input:focus, select:focus { border-color: var(--accent); }
+
+    .btn { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; width: 100%; transition: 0.2s; }
+    .btn:hover { background: var(--accent-hover); }
+    .btn-danger { background: var(--danger); }
+    .btn-success { background: var(--success); }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; text-align: left; }
+    th, td { padding: 12px; border-bottom: 1px solid var(--card-border); font-size: 0.9rem; }
+    th { color: var(--muted); font-weight: 600; }
+    
+    .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+    .badge-pago { background: rgba(35, 134, 54, 0.2); color: #3fb950; }
+    .badge-pendente { background: rgba(218, 54, 51, 0.2); color: #f85149; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+    .stat-card { background: var(--bg); border: 1px solid var(--card-border); padding: 16px; border-radius: 8px; text-align: center; }
+    .stat-card div:first-child { color: var(--muted); font-size: 0.85rem; }
+    .stat-card div:last-child { font-size: 1.5rem; font-weight: 800; margin-top: 4px; }
+
+    .actions-cell { display: flex; gap: 8px; }
+    .btn-sm { padding: 4px 8px; font-size: 0.8rem; border-radius: 4px; cursor: pointer; border: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Revista-EBD</h1>
+    <div>Controle de pedidos e cobrança das revistas trimestrais</div>
+  </div>
+</header>
+
+<div id="cloudStatus" class="status-loading">☁️ Conectando à nuvem...</div>
+
+<nav>
+  <button class="active" onclick="switchTab('clientes')">Clientes</button>
+  <button onclick="switchTab('valores')">Valores</button>
+  <button onclick="switchTab('pedidos')">Pedidos</button>
+  <button onclick="switchTab('resumo')">Resumo Geral</button>
+</nav>
+
+<main>
+  <!-- CLIENTES -->
+  <section id="sec-clientes" class="active">
+    <h2>Cadastro de Cliente</h2>
+    <p class="desc">Registre alunos e professores por faixa: adulto, júnior ou criança.</p>
+
+    <div class="grid">
+      <div class="field">
+        <label>Nome do Cliente</label>
+        <input type="text" id="cli-nome" placeholder="Ex: João Silva">
+      </div>
+      <div class="field">
+        <label>Faixa Etária</label>
+        <select id="cli-faixa">
+          <option value="adulto">Adulto</option>
+          <option value="junior">Júnior</option>
+          <option value="crianca">Criança</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Tipo</label>
+        <select id="cli-tipo">
+          <option value="aluno">Aluno</option>
+          <option value="professor">Professor</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Telefone (WhatsApp)</label>
+        <input type="text" id="cli-fone" placeholder="(91) 99999-9999">
+      </div>
+    </div>
+    <button class="btn" onclick="cadastrarCliente()">Cadastrar Cliente</button>
+
+    <h3 style="margin-top: 24px;">Clientes Cadastrados</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Faixa</th>
+          <th>Tipo</th>
+          <th>Telefone</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="tb-clientes"></tbody>
+    </table>
+  </section>
+
+  <!-- VALORES -->
+  <section id="sec-valores">
+    <h2>Valores da Revista</h2>
+    <p class="desc">Preço base da revista por tipo de público.</p>
+
+    <div class="grid">
+      <div class="field">
+        <label>Valor Aluno (R$)</label>
+        <input type="number" step="0.01" id="val-aluno" value="0.00">
+      </div>
+      <div class="field">
+        <label>Valor Professor (R$)</label>
+        <input type="number" step="0.01" id="val-prof" value="0.00">
+      </div>
+    </div>
+    <button class="btn" onclick="salvarValores()">Salvar Valores Base</button>
+  </section>
+
+  <!-- PEDIDOS -->
+  <section id="sec-pedidos">
+    <h2>Pedido de Revistas</h2>
+    <p class="desc">Lance o pedido por trimestre.</p>
+
+    <div class="grid">
+      <div class="field">
+        <label>Cliente</label>
+        <select id="ped-cliente"></select>
+      </div>
+      <div class="field">
+        <label>Trimestre</label>
+        <select id="ped-trimestre">
+          <option value="1º Trimestre">1º Trimestre</option>
+          <option value="2º Trimestre">2º Trimestre</option>
+          <option value="3º Trimestre">3º Trimestre</option>
+          <option value="4º Trimestre">4º Trimestre</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Tipo de Revista</label>
+        <select id="ped-tipo">
+          <option value="aluno">Revista do Aluno</option>
+          <option value="professor">Revista do Professor</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Quantidade</label>
+        <input type="number" id="ped-qtd" value="1" min="1">
+      </div>
+    </div>
+    <button class="btn" onclick="lancarPedido()">Lançar Pedido</button>
+
+    <h3 style="margin-top: 24px;">Pedidos Lançados</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Trimestre</th>
+          <th>Revista</th>
+          <th>Qtd</th>
+          <th>Valor Total</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="tb-pedidos"></tbody>
+    </table>
+  </section>
+
+  <!-- RESUMO -->
+  <section id="sec-resumo">
+    <h2>Resumo Geral</h2>
+    <p class="desc">Visão consolidada do sistema.</p>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div>Clientes</div>
+        <div id="st-clientes">0</div>
+      </div>
+      <div class="stat-card">
+        <div>Revistas Pedidas</div>
+        <div id="st-revistas">0</div>
+      </div>
+      <div class="stat-card">
+        <div>A Receber</div>
+        <div id="st-pendente" style="color: var(--danger)">R$ 0,00</div>
+      </div>
+      <div class="stat-card">
+        <div>Recebido</div>
+        <div id="st-recebido" style="color: #3fb950">R$ 0,00</div>
+      </div>
+    </div>
+
+    <div style="margin-top: 24px;">
+      <button class="btn btn-success" onclick="gerarRelatorioWhatsApp()">📲 Gerar Relatório WhatsApp</button>
+    </div>
+  </section>
+</main>
+
 <script>
   // CONFIGURAÇÕES DA API JSONBIN.IO (V3)
   const BIN_ID = '6a85b1bff5f4af5e2928ba89';
@@ -239,3 +486,6 @@
   // Inicialização
   window.addEventListener('DOMContentLoaded', carregarDaNuvem);
 </script>
+
+</body>
+</html>
