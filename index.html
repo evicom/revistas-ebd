@@ -248,7 +248,7 @@
 <script>
   // CONFIGURAÇÕES DA API JSONBIN.IO (V3)
   const BIN_ID = '6a85b1bff5f4af5e2928ba89';
-  const MASTER_KEY = '$2a$10$69I.WVd28qtbrr8JyLiIXOBsdBg4qwbDinwcf1f592s6KIdaZh8rO';
+  const MASTER_KEY = '$2a$10$8Wm2Ixc0mRA38i0rNyecw.HFCnENmYPaEOnz6iIeon0uyxDxgzHAS';
   const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
   // Estado Local dos Dados
@@ -296,7 +296,7 @@
     } catch (err) {
       console.error(err);
       statusEl.className = 'status-error';
-      statusEl.innerText = '❌ Erro ao conectar com o JSONBin. Verifique se o BIN ID e a Master Key pertencem à mesma conta.';
+      statusEl.innerText = '❌ Erro ao conectar com o JSONBin. Verifique suas chaves.';
     } finally {
       renderizarTudo();
     }
