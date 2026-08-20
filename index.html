@@ -12,9 +12,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Biblioteca html2pdf para geração de PDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
   <style>
     :root {
       --bg: #0d1117;
@@ -95,30 +92,6 @@
       header h1 { font-size: 2rem; }
       section { padding: 24px; }
     }
-
-    /* Estilo para geração de PDF limpo */
-    .pdf-template {
-      background: #ffffff !important;
-      color: #000000 !important;
-      padding: 20px;
-      font-family: Arial, sans-serif;
-      width: 750px;
-      position: fixed;
-      left: -9999px;
-      top: 0;
-    }
-    .pdf-template table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-    .pdf-template table, .pdf-template th, .pdf-template td {
-      border: 1px solid #000000 !important;
-      color: #000000 !important;
-      padding: 8px !important;
-      text-align: left;
-    }
-    .pdf-template th { background-color: #e0e0e0 !important; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -562,18 +535,45 @@
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`, '_blank');
   }
 
+  // GERADOR DE IMPRESSÃO / SALVAR EM PDF (NATIVO E INFALÍVEL)
+  function abrirJanelaImpressao(htmlConteudo, tituloDoc) {
+    const win = window.open('', '_blank');
+    win.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>${tituloDoc}</title>
+        <style>
+          body { font-family: Arial, sans-serif; color: #000; background: #fff; padding: 20px; }
+          h1 { text-align: center; font-size: 20px; margin-bottom: 5px; }
+          p.sub { text-align: center; font-size: 12px; color: #555; margin-bottom: 20px; }
+          h3 { font-size: 14px; margin-top: 20px; margin-bottom: 8px; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+          th, td { border: 1px solid #000; padding: 8px; font-size: 12px; text-align: left; }
+          th { background-color: #f0f0f0; font-weight: bold; }
+        </style>
+      </head>
+      <body>
+        ${htmlConteudo}
+      </body>
+      </html>
+    `);
+    win.document.close();
+    setTimeout(() => {
+      win.focus();
+      win.print();
+    }, 250);
+  }
+
   function exportarClientesPDF() {
     if (AppData.clientes.length === 0) {
       alert('Nenhum cliente cadastrado para exportar!');
       return;
     }
 
-    const pdfContainer = document.createElement('div');
-    pdfContainer.className = 'pdf-template';
-
-    pdfContainer.innerHTML = `
-      <h1 style="text-align: center; font-size: 18px; margin-bottom: 5px; color: #000;">Relação de Clientes Cadastrados - EBD</h1>
-      <p style="text-align: center; font-size: 11px; margin-bottom: 15px; color: #555;">Data da emissão: ${new Date().toLocaleDateString('pt-BR')}</p>
+    const html = `
+      <h1>Relação de Clientes Cadastrados - EBD</h1>
+      <p class="sub">Data da emissão: ${new Date().toLocaleDateString('pt-BR')}</p>
       
       <table>
         <thead>
@@ -599,19 +599,7 @@
       </table>
     `;
 
-    document.body.appendChild(pdfContainer);
-
-    const opt = {
-      margin: 10,
-      filename: `Clientes_EBD_${new Date().toISOString().slice(0,10)}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    html2pdf().set(opt).from(pdfContainer).save().then(() => {
-      document.body.removeChild(pdfContainer);
-    });
+    abrirJanelaImpressao(html, `Clientes_EBD_${new Date().toISOString().slice(0,10)}`);
   }
 
   function gerarRelatorioWhatsApp() {
@@ -642,14 +630,11 @@
       else totalPendente += p.valorTotal;
     });
 
-    const pdfContainer = document.createElement('div');
-    pdfContainer.className = 'pdf-template';
-
-    pdfContainer.innerHTML = `
-      <h1 style="text-align: center; font-size: 18px; margin-bottom: 5px; color: #000;">Relatório Geral EBD - Controle de Pedidos</h1>
-      <p style="text-align: center; font-size: 11px; margin-bottom: 15px; color: #555;">Data da emissão: ${new Date().toLocaleDateString('pt-BR')}</p>
+    const html = `
+      <h1>Relatório Geral EBD - Controle de Pedidos</h1>
+      <p class="sub">Data da emissão: ${new Date().toLocaleDateString('pt-BR')}</p>
       
-      <h3 style="margin-top: 15px; font-size: 14px;">1. Resumo Financeiro</h3>
+      <h3>1. Resumo Financeiro</h3>
       <table>
         <tr>
           <th>Total Clientes</th>
@@ -665,7 +650,7 @@
         </tr>
       </table>
 
-      <h3 style="margin-top: 15px; font-size: 14px;">2. Relação de Clientes Cadastrados</h3>
+      <h3>2. Relação de Clientes Cadastrados</h3>
       <table>
         <thead>
           <tr>
@@ -687,7 +672,7 @@
         </tbody>
       </table>
 
-      <h3 style="margin-top: 15px; font-size: 14px;">3. Relação Detalhada de Pedidos</h3>
+      <h3>3. Relação Detalhada de Pedidos</h3>
       <table>
         <thead>
           <tr>
@@ -714,19 +699,7 @@
       </table>
     `;
 
-    document.body.appendChild(pdfContainer);
-
-    const opt = {
-      margin: 10,
-      filename: `Relatorio_Geral_EBD_${new Date().toISOString().slice(0,10)}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    html2pdf().set(opt).from(pdfContainer).save().then(() => {
-      document.body.removeChild(pdfContainer);
-    });
+    abrirJanelaImpressao(html, `Relatorio_Geral_EBD_${new Date().toISOString().slice(0,10)}`);
   }
 
   window.addEventListener('DOMContentLoaded', carregarDaNuvem);
