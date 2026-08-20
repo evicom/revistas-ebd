@@ -30,7 +30,695 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); padding: 20px; line-height: 1.5; }
-    header { text-align: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--card-border); }
-    header h1 { font-size: 1.8rem; font-weight: 800; color: var(--accent-hover); }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); padding: 12px; line-height: 1.5; }
     
+    header { text-align: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--card-border); }
+    header h1 { font-size: 1.5rem; font-weight: 800; color: var(--accent-hover); }
+    
+    #cloudStatus {
+      text-align: center;
+      padding: 10px;
+      margin-bottom: 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      background-color: var(--card);
+      border: 1px solid var(--card-border);
+    }
+    .status-loading { color: var(--warning); }
+    .status-success { color: #3fb950; border-color: #238636 !important; }
+    .status-error { color: #f85149; border-color: #da3633 !important; }
+
+    nav { display: flex; gap: 8px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
+    nav button { flex: 1 1 auto; min-width: 120px; background: var(--card); border: 1px solid var(--card-border); color: var(--text); padding: 10px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: 0.2s; text-align: center; }
+    nav button.active, nav button:hover { background: var(--accent); border-color: var(--accent); }
+
+    section { display: none; background: var(--card); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; margin-bottom: 20px; }
+    section.active { display: block; }
+    section h2 { margin-bottom: 6px; font-size: 1.2rem; }
+    section p.desc { color: var(--muted); font-size: 0.85rem; margin-bottom: 16px; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 0.8rem; font-weight: 600; color: var(--muted); }
+    input, select { background: var(--bg); border: 1px solid var(--card-border); color: var(--text); padding: 10px; border-radius: 6px; outline: none; font-family: inherit; font-size: 0.9rem; width: 100%; }
+    input:focus, select:focus { border-color: var(--accent); }
+
+    .btn { background: var(--accent); color: white; border: none; padding: 12px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem; width: 100%; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn:hover { background: var(--accent-hover); }
+    .btn-danger { background: var(--danger); }
+    .btn-success { background: var(--success); }
+    .btn-warning { background: var(--warning); color: #000; }
+
+    /* Contêiner com rolagem horizontal para tabelas em celulares */
+    .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 16px; border-radius: 8px; border: 1px solid var(--card-border); }
+    table { width: 100%; border-collapse: collapse; text-align: left; white-space: nowrap; }
+    th, td { padding: 10px 12px; border-bottom: 1px solid var(--card-border); font-size: 0.85rem; }
+    th { color: var(--muted); font-weight: 600; background: rgba(0, 0, 0, 0.2); }
+    
+    .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+    .badge-pago { background: rgba(35, 134, 54, 0.2); color: #3fb950; }
+    .badge-pendente { background: rgba(218, 54, 51, 0.2); color: #f85149; }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+    .stat-card { background: var(--bg); border: 1px solid var(--card-border); padding: 12px; border-radius: 8px; text-align: center; }
+    .stat-card div:first-child { color: var(--muted); font-size: 0.8rem; }
+    .stat-card div:last-child { font-size: 1.3rem; font-weight: 800; margin-top: 4px; }
+
+    .actions-cell { display: flex; gap: 6px; }
+    .btn-sm { padding: 6px 10px; font-size: 0.75rem; border-radius: 4px; cursor: pointer; border: none; font-weight: 600; }
+
+    .button-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+    .button-group .btn { flex: 1 1 200px; }
+
+    /* Ajustes específicos para telas grandes */
+    @media (min-width: 768px) {
+      body { padding: 24px; max-width: 1100px; margin: 0 auto; }
+      header h1 { font-size: 2rem; }
+      section { padding: 24px; }
+    }
+
+    /* Estilo para geração de PDF limpo */
+    .pdf-template { background: #ffffff !important; color: #000000 !important; padding: 20px; font-family: Arial, sans-serif; }
+    .pdf-template table, .pdf-template th, .pdf-template td { border: 1px solid #ccc !important; color: #000000 !important; padding: 8px !important; }
+    .pdf-template th { background-color: #f2f2f2 !important; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Revista-EBD</h1>
+    <div>Controle de pedidos e cobrança das revistas trimestrais</div>
+  </div>
+</header>
+
+<div id="cloudStatus" class="status-loading">☁️ Conectando à nuvem...</div>
+
+<nav>
+  <button class="active" onclick="switchTab('clientes')">Clientes</button>
+  <button onclick="switchTab('valores')">Valores</button>
+  <button onclick="switchTab('pedidos')">Pedidos</button>
+  <button onclick="switchTab('resumo')">Resumo Geral</button>
+</nav>
+
+<main>
+  <!-- CLIENTES -->
+  <section id="sec-clientes" class="active">
+    <h2 id="cli-form-title">Cadastro de Cliente</h2>
+    <p class="desc">Registre alunos e professores por faixa: adulto, júnior ou criança.</p>
+
+    <input type="hidden" id="cli-edit-id" value="">
+
+    <div class="grid">
+      <div class="field">
+        <label>Nome do Cliente</label>
+        <input type="text" id="cli-nome" placeholder="Ex: João Silva">
+      </div>
+      <div class="field">
+        <label>Faixa Etária</label>
+        <select id="cli-faixa">
+          <option value="adulto">Adulto</option>
+          <option value="junior">Júnior</option>
+          <option value="crianca">Criança</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Tipo</label>
+        <select id="cli-tipo">
+          <option value="aluno">Aluno</option>
+          <option value="professor">Professor</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Telefone (WhatsApp)</label>
+        <input type="text" id="cli-fone" placeholder="(91) 99999-9999">
+      </div>
+    </div>
+    
+    <div class="button-group">
+      <button class="btn" id="btn-cadastrar-cli" onclick="cadastrarCliente()">Cadastrar Cliente</button>
+      <button class="btn btn-danger" id="btn-cancelar-cli" onclick="limparFormCliente()" style="display: none;">Cancelar Edição</button>
+    </div>
+
+    <h3 style="margin-top: 24px;">Clientes Cadastrados</h3>
+    
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Faixa</th>
+            <th>Tipo</th>
+            <th>Telefone</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tb-clientes"></tbody>
+      </table>
+    </div>
+
+    <div class="button-group">
+      <button class="btn btn-success" onclick="gerarWhatsAppClientes()">📲 Enviar Clientes WhatsApp</button>
+      <button class="btn btn-warning" onclick="exportarClientesPDF()">📄 Exportar Clientes PDF</button>
+    </div>
+  </section>
+
+  <!-- VALORES -->
+  <section id="sec-valores">
+    <h2>Valores da Revista</h2>
+    <p class="desc">Preço base da revista por tipo de público.</p>
+
+    <div class="grid">
+      <div class="field">
+        <label>Valor Aluno (R$)</label>
+        <input type="number" step="0.01" id="val-aluno" value="0.00">
+      </div>
+      <div class="field">
+        <label>Valor Professor (R$)</label>
+        <input type="number" step="0.01" id="val-prof" value="0.00">
+      </div>
+    </div>
+    <button class="btn" onclick="salvarValores()">Salvar Valores Base</button>
+  </section>
+
+  <!-- PEDIDOS -->
+  <section id="sec-pedidos">
+    <h2>Pedido de Revistas</h2>
+    <p class="desc">Lance o pedido por trimestre.</p>
+
+    <div class="grid">
+      <div class="field">
+        <label>Cliente</label>
+        <select id="ped-cliente"></select>
+      </div>
+      <div class="field">
+        <label>Trimestre</label>
+        <select id="ped-trimestre">
+          <option value="1º Trimestre">1º Trimestre</option>
+          <option value="2º Trimestre">2º Trimestre</option>
+          <option value="3º Trimestre">3º Trimestre</option>
+          <option value="4º Trimestre">4º Trimestre</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Tipo de Revista</label>
+        <select id="ped-tipo">
+          <option value="aluno">Revista do Aluno</option>
+          <option value="professor">Revista do Professor</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Quantidade</label>
+        <input type="number" id="ped-qtd" value="1" min="1">
+      </div>
+    </div>
+    <button class="btn" onclick="lancarPedido()">Lançar Pedido</button>
+
+    <h3 style="margin-top: 24px;">Pedidos Lançados</h3>
+    
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Trimestre</th>
+            <th>Revista</th>
+            <th>Qtd</th>
+            <th>Valor Total</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tb-pedidos"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- RESUMO -->
+  <section id="sec-resumo">
+    <h2>Resumo Geral</h2>
+    <p class="desc">Visão consolidada do sistema.</p>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div>Clientes</div>
+        <div id="st-clientes">0</div>
+      </div>
+      <div class="stat-card">
+        <div>Revistas Pedidas</div>
+        <div id="st-revistas">0</div>
+      </div>
+      <div class="stat-card">
+        <div>A Receber</div>
+        <div id="st-pendente" style="color: var(--danger)">R$ 0,00</div>
+      </div>
+      <div class="stat-card">
+        <div>Recebido</div>
+        <div id="st-recebido" style="color: #3fb950">R$ 0,00</div>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button class="btn btn-success" onclick="gerarRelatorioWhatsApp()">📲 Relatório Geral WhatsApp</button>
+      <button class="btn btn-warning" onclick="exportarPDF()">📄 Exportar Relatório PDF</button>
+    </div>
+  </section>
+</main>
+
+<script>
+  // CONFIGURAÇÕES DA API JSONBIN.IO (V3)
+  const BIN_ID = '6a85b1bff5f4af5e2928ba89';
+  const MASTER_KEY = '$2a$10$8Wm2Ixc0mRA38i0rNyecw.HFCnENmYPaEOnz6iIeon0uyxDxgzHAS';
+  const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+
+  // Estado Local dos Dados
+  let AppData = {
+    clientes: [],
+    pedidos: [],
+    valores: { aluno: 10, professor: 15 }
+  };
+
+  // Alternar Abas da Navegação
+  function switchTab(tabKey) {
+    document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+    
+    if (event) event.target.classList.add('active');
+    document.getElementById(`sec-${tabKey}`).classList.add('active');
+  }
+
+  // CARREGAR DADOS DA NUVEM
+  async function carregarDaNuvem() {
+    const statusEl = document.getElementById('cloudStatus');
+    statusEl.className = 'status-loading';
+    statusEl.innerText = '☁️ Carregando dados do JSONBin...';
+
+    try {
+      const response = await fetch(`${API_URL}/latest`, {
+        method: 'GET',
+        headers: { 'X-Master-Key': MASTER_KEY }
+      });
+
+      if (!response.ok) throw new Error(`Status ${response.status}`);
+
+      const data = await response.json();
+      if (data.record) {
+        AppData = {
+          clientes: data.record.clientes || [],
+          pedidos: data.record.pedidos || [],
+          valores: data.record.valores || { aluno: 0, professor: 0 }
+        };
+        statusEl.className = 'status-success';
+        statusEl.innerText = '✅ Dados em sincronia com a nuvem!';
+      }
+    } catch (err) {
+      console.error(err);
+      statusEl.className = 'status-error';
+      statusEl.innerText = '❌ Erro ao conectar com o JSONBin. Verifique suas chaves.';
+    } finally {
+      renderizarTudo();
+    }
+  }
+
+  // SALVAR DADOS NA NUVEM
+  async function salvarNaNuvem() {
+    const statusEl = document.getElementById('cloudStatus');
+    statusEl.className = 'status-loading';
+    statusEl.innerText = '⏳ Salvando dados na nuvem...';
+
+    try {
+      const response = await fetch(API_URL, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Master-Key': MASTER_KEY
+        },
+        body: JSON.stringify(AppData)
+      });
+
+      if (!response.ok) throw new Error(`Status ${response.status}`);
+
+      statusEl.className = 'status-success';
+      statusEl.innerText = '✅ Dados salvos com sucesso na nuvem!';
+    } catch (err) {
+      console.error(err);
+      statusEl.className = 'status-error';
+      statusEl.innerText = '❌ Falha ao salvar dados no JSONBin.';
+    }
+  }
+
+  // Lógica de Cliente (Cadastro / Edição)
+  function cadastrarCliente() {
+    const editId = document.getElementById('cli-edit-id').value;
+    const nome = document.getElementById('cli-nome').value.trim();
+    const faixa = document.getElementById('cli-faixa').value;
+    const tipo = document.getElementById('cli-tipo').value;
+    const fone = document.getElementById('cli-fone').value.trim();
+
+    if (!nome) { alert('Digite o nome do cliente!'); return; }
+
+    if (editId) {
+      const clienteIndex = AppData.clientes.findIndex(c => c.id == editId);
+      if (clienteIndex !== -1) {
+        const nomeAntigo = AppData.clientes[clienteIndex].nome;
+        AppData.clientes[clienteIndex] = { id: parseInt(editId), nome, faixa, tipo, fone };
+        
+        AppData.pedidos.forEach(p => {
+          if (p.clienteNome === nomeAntigo) p.clienteNome = nome;
+        });
+      }
+    } else {
+      AppData.clientes.push({ id: Date.now(), nome, faixa, tipo, fone });
+    }
+
+    limparFormCliente();
+    renderizarTudo();
+    salvarNaNuvem();
+  }
+
+  function editarCliente(id) {
+    const cliente = AppData.clientes.find(c => c.id === id);
+    if (!cliente) return;
+
+    document.getElementById('cli-edit-id').value = cliente.id;
+    document.getElementById('cli-nome').value = cliente.nome;
+    document.getElementById('cli-faixa').value = cliente.faixa;
+    document.getElementById('cli-tipo').value = cliente.tipo;
+    document.getElementById('cli-fone').value = cliente.fone || '';
+
+    document.getElementById('cli-form-title').innerText = 'Editar Cliente';
+    document.getElementById('btn-cadastrar-cli').innerText = 'Salvar Alterações';
+    document.getElementById('btn-cancelar-cli').style.display = 'block';
+  }
+
+  function limparFormCliente() {
+    document.getElementById('cli-edit-id').value = '';
+    document.getElementById('cli-nome').value = '';
+    document.getElementById('cli-fone').value = '';
+    document.getElementById('cli-form-title').innerText = 'Cadastro de Cliente';
+    document.getElementById('btn-cadastrar-cli').innerText = 'Cadastrar Cliente';
+    document.getElementById('btn-cancelar-cli').style.display = 'none';
+  }
+
+  function deletarCliente(id) {
+    AppData.clientes = AppData.clientes.filter(c => c.id !== id);
+    renderizarTudo();
+    salvarNaNuvem();
+  }
+
+  function salvarValores() {
+    AppData.valores.aluno = parseFloat(document.getElementById('val-aluno').value) || 0;
+    AppData.valores.professor = parseFloat(document.getElementById('val-prof').value) || 0;
+    
+    renderizarTudo();
+    salvarNaNuvem();
+    alert('Valores atualizados!');
+  }
+
+  function lancarPedido() {
+    const clienteId = document.getElementById('ped-cliente').value;
+    const trimestre = document.getElementById('ped-trimestre').value;
+    const tipoRevista = document.getElementById('ped-tipo').value;
+    const qtd = parseInt(document.getElementById('ped-qtd').value) || 1;
+
+    if (!clienteId) { alert('Selecione um cliente!'); return; }
+
+    const cliente = AppData.clientes.find(c => c.id == clienteId);
+    const precoUnitario = tipoRevista === 'aluno' ? AppData.valores.aluno : AppData.valores.professor;
+    const valorTotal = precoUnitario * qtd;
+
+    AppData.pedidos.push({
+      id: Date.now(),
+      clienteNome: cliente ? cliente.nome : 'Desconhecido',
+      trimestre,
+      tipoRevista,
+      qtd,
+      valorTotal,
+      pago: false
+    });
+
+    renderizarTudo();
+    salvarNaNuvem();
+  }
+
+  function alternarStatusPedido(id) {
+    const ped = AppData.pedidos.find(p => p.id === id);
+    if (ped) {
+      ped.pago = !ped.pago;
+      renderizarTudo();
+      salvarNaNuvem();
+    }
+  }
+
+  function deletarPedido(id) {
+    AppData.pedidos = AppData.pedidos.filter(p => p.id !== id);
+    renderizarTudo();
+    salvarNaNuvem();
+  }
+
+  // Renderização da Interface
+  function renderizarTudo() {
+    // 1. Tabela Clientes
+    const tbCli = document.getElementById('tb-clientes');
+    tbCli.innerHTML = AppData.clientes.map(c => `
+      <tr>
+        <td>${c.nome}</td>
+        <td>${c.faixa}</td>
+        <td>${c.tipo}</td>
+        <td>${c.fone || '-'}</td>
+        <td class="actions-cell">
+          <button class="btn-sm btn-warning" onclick="editarCliente(${c.id})">Editar</button>
+          <button class="btn-sm btn-danger" onclick="deletarCliente(${c.id})">Excluir</button>
+        </td>
+      </tr>
+    `).join('');
+
+    // Select de Clientes nos Pedidos
+    const selCli = document.getElementById('ped-cliente');
+    selCli.innerHTML = AppData.clientes.map(c => `<option value="${c.id}">${c.nome}</option>`).join('');
+
+    // 2. Valores
+    document.getElementById('val-aluno').value = AppData.valores.aluno || 0;
+    document.getElementById('val-prof').value = AppData.valores.professor || 0;
+
+    // 3. Tabela Pedidos
+    const tbPed = document.getElementById('tb-pedidos');
+    tbPed.innerHTML = AppData.pedidos.map(p => `
+      <tr>
+        <td>${p.clienteNome}</td>
+        <td>${p.trimestre}</td>
+        <td>${p.tipoRevista === 'aluno' ? 'Aluno' : 'Professor'}</td>
+        <td>${p.qtd}</td>
+        <td>R$ ${p.valorTotal.toFixed(2)}</td>
+        <td><span class="badge ${p.pago ? 'badge-pago' : 'badge-pendente'}">${p.pago ? 'Pago' : 'Pendente'}</span></td>
+        <td class="actions-cell">
+          <button class="btn-sm btn-success" onclick="alternarStatusPedido(${p.id})">
+            ${p.pago ? 'Marcar Pendente' : 'Marcar Pago'}
+          </button>
+          <button class="btn-sm btn-danger" onclick="deletarPedido(${p.id})">Excluir</button>
+        </td>
+      </tr>
+    `).join('');
+
+    // 4. Métricas do Resumo
+    document.getElementById('st-clientes').innerText = AppData.clientes.length;
+    
+    let totalRevistas = 0;
+    let totalPendente = 0;
+    let totalRecebido = 0;
+
+    AppData.pedidos.forEach(p => {
+      totalRevistas += p.qtd;
+      if (p.pago) totalRecebido += p.valorTotal;
+      else totalPendente += p.valorTotal;
+    });
+
+    document.getElementById('st-revistas').innerText = totalRevistas;
+    document.getElementById('st-pendente').innerText = `R$ ${totalPendente.toFixed(2)}`;
+    document.getElementById('st-recebido').innerText = `R$ ${totalRecebido.toFixed(2)}`;
+  }
+
+  // EXPORTAÇÕES DE CLIENTES
+  function gerarWhatsAppClientes() {
+    if (AppData.clientes.length === 0) {
+      alert('Nenhum cliente cadastrado!');
+      return;
+    }
+
+    let texto = `👥 *LISTA DE CLIENTES CADASTRADOS - EBD*\n\n`;
+    AppData.clientes.forEach((c, index) => {
+      texto += `${index + 1}. *${c.nome}*\n`;
+      texto += `   • Faixa: ${c.faixa} | Tipo: ${c.tipo}\n`;
+      texto += `   • Tel: ${c.fone || 'Não informado'}\n\n`;
+    });
+
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`, '_blank');
+  }
+
+  function exportarClientesPDF() {
+    if (AppData.clientes.length === 0) {
+      alert('Nenhum cliente cadastrado!');
+      return;
+    }
+
+    const pdfContainer = document.createElement('div');
+    pdfContainer.className = 'pdf-template';
+
+    pdfContainer.innerHTML = `
+      <h1 style="text-align: center; font-size: 20px; margin-bottom: 5px;">Relação de Clientes Cadastrados - EBD</h1>
+      <p style="text-align: center; font-size: 12px; margin-bottom: 20px; color: #555;">Data da emissão: ${new Date().toLocaleDateString('pt-BR')}</p>
+      
+      <table style="width: 100%;">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nome</th>
+            <th>Faixa Etária</th>
+            <th>Tipo</th>
+            <th>Telefone</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${AppData.clientes.map((c, i) => `
+            <tr>
+              <td>${i + 1}</td>
+              <td>${c.nome}</td>
+              <td>${c.faixa}</td>
+              <td>${c.tipo}</td>
+              <td>${c.fone || '-'}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+
+    const opt = {
+      margin: 10,
+      filename: `Clientes_EBD_${new Date().toISOString().slice(0,10)}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(pdfContainer).save();
+  }
+
+  // EXPORTAÇÕES DO RESUMO GERAL
+  function gerarRelatorioWhatsApp() {
+    let totalRevistas = 0, totalPendente = 0, totalRecebido = 0;
+    AppData.pedidos.forEach(p => {
+      totalRevistas += p.qtd;
+      if (p.pago) totalRecebido += p.valorTotal;
+      else totalPendente += p.valorTotal;
+    });
+
+    const texto = `📋 *RELATÓRIO GERAL DE PEDIDOS - REVISTA EBD*\n\n` +
+      `🔹 *Total de Clientes:* ${AppData.clientes.length}\n` +
+      `🔹 *Total de Revistas:* ${totalRevistas}\n` +
+      `🔹 *Valor Pendente:* R$ ${totalPendente.toFixed(2)}\n` +
+      `🔹 *Valor Recebido:* R$ ${totalRecebido.toFixed(2)}\n\n` +
+      `--- \n` +
+      `🔑 *Chave Pix para Pagamento:*\n` +
+      `91 98081-8289 (Telefone)`;
+
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`, '_blank');
+  }
+
+  function exportarPDF() {
+    let totalRevistas = 0, totalPendente = 0, totalRecebido = 0;
+    AppData.pedidos.forEach(p => {
+      totalRevistas += p.qtd;
+      if (p.pago) totalRecebido += p.valorTotal;
+      else totalPendente += p.valorTotal;
+    });
+
+    const pdfContainer = document.createElement('div');
+    pdfContainer.className = 'pdf-template';
+
+    pdfContainer.innerHTML = `
+      <h1 style="text-align: center; font-size: 20px; margin-bottom: 5px;">Relatório Geral EBD - Controle de Pedidos</h1>
+      <p style="text-align: center; font-size: 12px; margin-bottom: 20px; color: #555;">Data da emissão: ${new Date().toLocaleDateString('pt-BR')}</p>
+      
+      <h3>1. Resumo Financeiro</h3>
+      <table style="width: 100%; margin-bottom: 20px;">
+        <tr>
+          <th>Total Clientes</th>
+          <th>Revistas Pedidas</th>
+          <th>A Receber (Pendente)</th>
+          <th>Total Recebido</th>
+        </tr>
+        <tr>
+          <td>${AppData.clientes.length}</td>
+          <td>${totalRevistas}</td>
+          <td style="color: red; font-weight: bold;">R$ ${totalPendente.toFixed(2)}</td>
+          <td style="color: green; font-weight: bold;">R$ ${totalRecebido.toFixed(2)}</td>
+        </tr>
+      </table>
+
+      <h3>2. Relação de Clientes Cadastrados</h3>
+      <table style="width: 100%; margin-bottom: 20px;">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Faixa</th>
+            <th>Tipo</th>
+            <th>Telefone</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${AppData.clientes.map(c => `
+            <tr>
+              <td>${c.nome}</td>
+              <td>${c.faixa}</td>
+              <td>${c.tipo}</td>
+              <td>${c.fone || '-'}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+
+      <h3>3. Relação Detalhada de Pedidos</h3>
+      <table style="width: 100%;">
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Trimestre</th>
+            <th>Revista</th>
+            <th>Qtd</th>
+            <th>Valor</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${AppData.pedidos.map(p => `
+            <tr>
+              <td>${p.clienteNome}</td>
+              <td>${p.trimestre}</td>
+              <td>${p.tipoRevista === 'aluno' ? 'Aluno' : 'Professor'}</td>
+              <td>${p.qtd}</td>
+              <td>R$ ${p.valorTotal.toFixed(2)}</td>
+              <td style="font-weight: bold; color: ${p.pago ? 'green' : 'red'};">${p.pago ? 'PAGO' : 'PENDENTE'}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+
+    const opt = {
+      margin: 10,
+      filename: `Relatorio_Geral_EBD_${new Date().toISOString().slice(0,10)}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(pdfContainer).save();
+  }
+
+  // Inicialização
+  window.addEventListener('DOMContentLoaded', carregarDaNuvem);
+</script>
+
+</body>
+</html>
