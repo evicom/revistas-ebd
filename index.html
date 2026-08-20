@@ -70,7 +70,6 @@
     .btn-success { background: var(--success); }
     .btn-warning { background: var(--warning); color: #000; }
 
-    /* Contêiner com rolagem horizontal para tabelas em celulares */
     .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 16px; border-radius: 8px; border: 1px solid var(--card-border); }
     table { width: 100%; border-collapse: collapse; text-align: left; white-space: nowrap; }
     th, td { padding: 10px 12px; border-bottom: 1px solid var(--card-border); font-size: 0.85rem; }
@@ -91,7 +90,6 @@
     .button-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
     .button-group .btn { flex: 1 1 200px; }
 
-    /* Ajustes específicos para telas grandes */
     @media (min-width: 768px) {
       body { padding: 24px; max-width: 1100px; margin: 0 auto; }
       header h1 { font-size: 2rem; }
@@ -99,9 +97,28 @@
     }
 
     /* Estilo para geração de PDF limpo */
-    .pdf-template { background: #ffffff !important; color: #000000 !important; padding: 20px; font-family: Arial, sans-serif; }
-    .pdf-template table, .pdf-template th, .pdf-template td { border: 1px solid #ccc !important; color: #000000 !important; padding: 8px !important; }
-    .pdf-template th { background-color: #f2f2f2 !important; }
+    .pdf-template {
+      background: #ffffff !important;
+      color: #000000 !important;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      width: 750px;
+      position: fixed;
+      left: -9999px;
+      top: 0;
+    }
+    .pdf-template table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    .pdf-template table, .pdf-template th, .pdf-template td {
+      border: 1px solid #000000 !important;
+      color: #000000 !important;
+      padding: 8px !important;
+      text-align: left;
+    }
+    .pdf-template th { background-color: #e0e0e0 !important; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -299,7 +316,6 @@
     valores: { aluno: 10, professor: 15 }
   };
 
-  // Alternar Abas da Navegação
   function switchTab(tabKey) {
     document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
@@ -308,7 +324,6 @@
     document.getElementById(`sec-${tabKey}`).classList.add('active');
   }
 
-  // CARREGAR DADOS DA NUVEM
   async function carregarDaNuvem() {
     const statusEl = document.getElementById('cloudStatus');
     statusEl.className = 'status-loading';
@@ -341,7 +356,6 @@
     }
   }
 
-  // SALVAR DADOS NA NUVEM
   async function salvarNaNuvem() {
     const statusEl = document.getElementById('cloudStatus');
     statusEl.className = 'status-loading';
@@ -368,7 +382,6 @@
     }
   }
 
-  // Lógica de Cliente (Cadastro / Edição)
   function cadastrarCliente() {
     const editId = document.getElementById('cli-edit-id').value;
     const nome = document.getElementById('cli-nome').value.trim();
@@ -477,9 +490,7 @@
     salvarNaNuvem();
   }
 
-  // Renderização da Interface
   function renderizarTudo() {
-    // 1. Tabela Clientes
     const tbCli = document.getElementById('tb-clientes');
     tbCli.innerHTML = AppData.clientes.map(c => `
       <tr>
@@ -494,15 +505,12 @@
       </tr>
     `).join('');
 
-    // Select de Clientes nos Pedidos
     const selCli = document.getElementById('ped-cliente');
     selCli.innerHTML = AppData.clientes.map(c => `<option value="${c.id}">${c.nome}</option>`).join('');
 
-    // 2. Valores
     document.getElementById('val-aluno').value = AppData.valores.aluno || 0;
     document.getElementById('val-prof').value = AppData.valores.professor || 0;
 
-    // 3. Tabela Pedidos
     const tbPed = document.getElementById('tb-pedidos');
     tbPed.innerHTML = AppData.pedidos.map(p => `
       <tr>
@@ -521,7 +529,6 @@
       </tr>
     `).join('');
 
-    // 4. Métricas do Resumo
     document.getElementById('st-clientes').innerText = AppData.clientes.length;
     
     let totalRevistas = 0;
@@ -539,7 +546,6 @@
     document.getElementById('st-recebido').innerText = `R$ ${totalRecebido.toFixed(2)}`;
   }
 
-  // EXPORTAÇÕES DE CLIENTES
   function gerarWhatsAppClientes() {
     if (AppData.clientes.length === 0) {
       alert('Nenhum cliente cadastrado!');
@@ -558,7 +564,7 @@
 
   function exportarClientesPDF() {
     if (AppData.clientes.length === 0) {
-      alert('Nenhum cliente cadastrado!');
+      alert('Nenhum cliente cadastrado para exportar!');
       return;
     }
 
@@ -566,17 +572,17 @@
     pdfContainer.className = 'pdf-template';
 
     pdfContainer.innerHTML = `
-      <h1 style="text-align: center; font-size: 20px; margin-bottom: 5px;">Relação de Clientes Cadastrados - EBD</h1>
-      <p style="text-align: center; font-size: 12px; margin-bottom: 20px; color: #555;">Data da emissão: ${new Date().toLocaleDateString('pt-BR')}</p>
+      <h1 style="text-align: center; font-size: 18px; margin-bottom: 5px; color: #000;">Relação de Clientes Cadastrados - EBD</h1>
+      <p style="text-align: center; font-size: 11px; margin-bottom: 15px; color: #555;">Data da emissão: ${new Date().toLocaleDateString('pt-BR')}</p>
       
-      <table style="width: 100%;">
+      <table>
         <thead>
           <tr>
-            <th>#</th>
-            <th>Nome</th>
-            <th>Faixa Etária</th>
-            <th>Tipo</th>
-            <th>Telefone</th>
+            <th style="width: 5%;">#</th>
+            <th style="width: 40%;">Nome</th>
+            <th style="width: 15%;">Faixa Etária</th>
+            <th style="width: 15%;">Tipo</th>
+            <th style="width: 25%;">Telefone</th>
           </tr>
         </thead>
         <tbody>
@@ -593,18 +599,21 @@
       </table>
     `;
 
+    document.body.appendChild(pdfContainer);
+
     const opt = {
       margin: 10,
       filename: `Clientes_EBD_${new Date().toISOString().slice(0,10)}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
+      html2canvas: { scale: 2, useCORS: true },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
-    html2pdf().set(opt).from(pdfContainer).save();
+    html2pdf().set(opt).from(pdfContainer).save().then(() => {
+      document.body.removeChild(pdfContainer);
+    });
   }
 
-  // EXPORTAÇÕES DO RESUMO GERAL
   function gerarRelatorioWhatsApp() {
     let totalRevistas = 0, totalPendente = 0, totalRecebido = 0;
     AppData.pedidos.forEach(p => {
@@ -637,11 +646,11 @@
     pdfContainer.className = 'pdf-template';
 
     pdfContainer.innerHTML = `
-      <h1 style="text-align: center; font-size: 20px; margin-bottom: 5px;">Relatório Geral EBD - Controle de Pedidos</h1>
-      <p style="text-align: center; font-size: 12px; margin-bottom: 20px; color: #555;">Data da emissão: ${new Date().toLocaleDateString('pt-BR')}</p>
+      <h1 style="text-align: center; font-size: 18px; margin-bottom: 5px; color: #000;">Relatório Geral EBD - Controle de Pedidos</h1>
+      <p style="text-align: center; font-size: 11px; margin-bottom: 15px; color: #555;">Data da emissão: ${new Date().toLocaleDateString('pt-BR')}</p>
       
-      <h3>1. Resumo Financeiro</h3>
-      <table style="width: 100%; margin-bottom: 20px;">
+      <h3 style="margin-top: 15px; font-size: 14px;">1. Resumo Financeiro</h3>
+      <table>
         <tr>
           <th>Total Clientes</th>
           <th>Revistas Pedidas</th>
@@ -656,8 +665,8 @@
         </tr>
       </table>
 
-      <h3>2. Relação de Clientes Cadastrados</h3>
-      <table style="width: 100%; margin-bottom: 20px;">
+      <h3 style="margin-top: 15px; font-size: 14px;">2. Relação de Clientes Cadastrados</h3>
+      <table>
         <thead>
           <tr>
             <th>Nome</th>
@@ -678,8 +687,8 @@
         </tbody>
       </table>
 
-      <h3>3. Relação Detalhada de Pedidos</h3>
-      <table style="width: 100%;">
+      <h3 style="margin-top: 15px; font-size: 14px;">3. Relação Detalhada de Pedidos</h3>
+      <table>
         <thead>
           <tr>
             <th>Cliente</th>
@@ -705,18 +714,21 @@
       </table>
     `;
 
+    document.body.appendChild(pdfContainer);
+
     const opt = {
       margin: 10,
       filename: `Relatorio_Geral_EBD_${new Date().toISOString().slice(0,10)}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
+      html2canvas: { scale: 2, useCORS: true },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
-    html2pdf().set(opt).from(pdfContainer).save();
+    html2pdf().set(opt).from(pdfContainer).save().then(() => {
+      document.body.removeChild(pdfContainer);
+    });
   }
 
-  // Inicialização
   window.addEventListener('DOMContentLoaded', carregarDaNuvem);
 </script>
 
